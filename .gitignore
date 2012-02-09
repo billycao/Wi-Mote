@@ -1,7 +1,6 @@
 android/.project/*
 android/.settings/*
 android/gen
-android/*.properties
 android/.project
 android/
 android/bin/*
