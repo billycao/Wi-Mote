@@ -4,3 +4,6 @@ android/gen
 android/*.properties
 android/.project
 android/
+android/bin/*
+android/.classpath
+
