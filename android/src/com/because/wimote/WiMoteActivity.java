@@ -1,4 +1,4 @@
-package com.awesome.wimote;
+package com.because.wimote;
 
 import android.app.Activity;
 import android.os.Bundle;
