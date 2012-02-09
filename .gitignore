@@ -6,4 +6,4 @@ android/.project
 android/
 android/bin/*
 android/.classpath
-
+android/bin
