@@ -1,5 +1,6 @@
-android/.project
-android/.settings
+android/.project/*
+android/.settings/*
 android/gen
-android/project.properties
+android/*.properties
 android/.project
+android/
