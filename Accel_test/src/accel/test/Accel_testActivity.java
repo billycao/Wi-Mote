@@ -5,7 +5,12 @@ package accel.test;
  */
 
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -14,6 +19,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
+
 
 //extra for graphics
 import android.graphics.*;
@@ -35,12 +41,19 @@ public class Accel_testActivity extends Activity   {
     private TextView mTextView1;
     private TextView mTextView2;
     
-    //For Graphics
+    //For Graphics  
     DrawView drawView;
     
     int width = 480;
     int height = 800;
 
+    //for server
+    String szAccelPercent = new String();
+
+	private static final String hostname = "192.168.0.17";
+	private static final int port = 27015;
+    
+    
     /** Called when the activity is first created. */
     
     @Override
@@ -53,8 +66,9 @@ public class Accel_testActivity extends Activity   {
         
         //for Graphics
         drawView = new DrawView(this);
+       // drawView = (DrawView)findViewById(R.id.drawView1);
         drawView.setBackgroundColor(Color.BLACK);
-        setContentView(drawView);
+      //  setContentView(drawView);
         
         //set the sensors and manager
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -66,6 +80,21 @@ public class Accel_testActivity extends Activity   {
         }
         
     }
+    
+    // SERVER  ---------------
+    private void sendString(String string) {
+
+		try {
+			DatagramSocket socket = new DatagramSocket();
+			byte[] data = string.getBytes();
+			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), port);
+			socket.send(packet);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+    
     
     private void ProcessData(float x, float y, float z)
     {
@@ -99,10 +128,21 @@ public class Accel_testActivity extends Activity   {
     	else
     		PercentZ = PercentZ - DetectionThreshold*(PercentZ/Math.abs(PercentZ));
     	
-    	mTextView2.setText("%-X: " + PercentX + ";\n %-Y:" + PercentY +";\n %-Z:" + PercentZ);
+    	mTextView1.setText("%-X: " + PercentX + ";\n %-Y:" + PercentY +";\n %-Z:" + PercentZ);
     
     	
-    	//---------------Pass Accelerometer data to Network Function------------------
+    	//---------------Pass Accelerometer data to Network Function------------------ 	
+    	
+    	int RoundX =  -Math.round(PercentX);
+    	int RoundY =  -Math.round(PercentY);
+ 
+    	szAccelPercent = Integer.toString(RoundX, 10) + " " + Integer.toString(RoundY, 10);
+    		
+    	mTextView2.setText("ACCEL " + szAccelPercent);
+    	sendString("ACCEL " + szAccelPercent);
+
+    	//-------------Server Passing complete---------------------------------------------
+    	
     	
     	//===================== display data on view=============================
     	// adjust values to display on screen. 
@@ -115,7 +155,6 @@ public class Accel_testActivity extends Activity   {
     	//mTextView1.setText("x: " + x + ";\n y:" + y +";\n z:" + z);
     	
     	//mTextView2.setText("%-X: " + PercentX + ";\n %-Y:" + PercentY +";\n %-Z:" + PercentZ);
-    	
     	// update values
     	mSensorX = x;
 	    mSensorY = y;
