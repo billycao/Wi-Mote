@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Welcome to the framework of the Wi-Mote</string>
+    <string name="app_name">Wi-Mote Trackpad</string>
+    <string name="btn1">Configure</string>
+    <string name="btn2">Keyboard</string>
+    <string name="btn3">Mouse</string>
+    <string name="btn4">Touchpad</string>
+
+</resources>
