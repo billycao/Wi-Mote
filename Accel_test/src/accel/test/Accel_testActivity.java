@@ -5,6 +5,11 @@ package accel.test;
  */
 
 
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -18,8 +23,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.widget.TextView;
 
+import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ToggleButton;
 
 //extra for graphics
 import android.graphics.*;
@@ -29,7 +36,7 @@ import android.graphics.*;
 import android.view.*;
 
 
-public class Accel_testActivity extends Activity   {
+public class Accel_testActivity extends Activity implements OnClickListener  {
 
 	private SensorManager mSensorManager;
 	private List<Sensor> sensors;
@@ -38,22 +45,51 @@ public class Accel_testActivity extends Activity   {
     private float mSensorX, mSensorY, mSensorZ = 0f;
     private float PercentX, PercentY, PercentZ = 0f;
     
-    private TextView mTextView1;
-    private TextView mTextView2;
+    private TextView mTextView1, mTextView2;
+    private TextView mSensativity, mThreshold;
+    ToggleButton toggleRun;
     
-    //For Graphics  
-    DrawView drawView;
+    //For Accel________________________
+	float PercentScaleMax = (float) 4; 
+	float AccelMaximum = (float) 10;
+	float DetectionThreshold = (float) 2;
     
+    //For Graphics________________________
+    DrawView drawView;    
     int width = 480;
     int height = 800;
 
-    //for server
+    //for server________________________________________
     String szAccelPercent = new String();
 
-	private static final String hostname = "192.168.0.17";
+	private static final String hostname = "192.168.0.6";
 	private static final int port = 27015;
-    
-    
+	
+	private OnTouchListener buttonListener = new OnTouchListener() {
+
+		public boolean onTouch(View button, MotionEvent event) {
+			
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				if (button.getId() == R.id.Mouse_left)
+					sendString("MOUSE_LEFT_DOWN");
+				else if (button.getId() == R.id.Mouse_Right)
+					sendString("MOUSE_RIGHT_DOWN");
+				break;
+			case MotionEvent.ACTION_UP:
+				if (button.getId() == R.id.Mouse_left)
+					sendString("MOUSE_LEFT_UP");
+				else if (button.getId() == R.id.Mouse_Right)
+					sendString("MOUSE_RIGHT_UP");
+				break;
+			default:
+				break;
+			}
+			
+			return false;
+		}
+	};
+	
     /** Called when the activity is first created. */
     
     @Override
@@ -61,14 +97,33 @@ public class Accel_testActivity extends Activity   {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accel_test);
         
+        //testing output
         mTextView1 = (TextView)findViewById(R.id.textView1);
         mTextView2 = (TextView)findViewById(R.id.textView2);
         
+        mSensativity = (TextView) findViewById(R.id.sens_text);
+        mThreshold = (TextView) findViewById(R.id.thres_text);
+        
+        Button buttonSensUp = (Button) findViewById(R.id.sens_button_up);
+        buttonSensUp.setOnClickListener(this);
+        Button buttonSensDn = (Button) findViewById(R.id.sens_button_down);
+        buttonSensDn.setOnClickListener(this);
+        Button buttonThresUp = (Button) findViewById(R.id.thres_button_up);
+        buttonThresUp.setOnClickListener(this);
+        Button buttonThresDn = (Button) findViewById(R.id.thres_button_down);
+        buttonThresDn.setOnClickListener(this);
+        
+        ((Button)findViewById(R.id.Mouse_left)).setOnTouchListener(buttonListener);
+        ((Button)findViewById(R.id.Mouse_Right)).setOnTouchListener(buttonListener);
+
+        
+        toggleRun = (ToggleButton)findViewById(R.id.toggleButton1);
+        
         //for Graphics
         drawView = new DrawView(this);
-       // drawView = (DrawView)findViewById(R.id.drawView1);
+        // drawView = (DrawView)findViewById(R.id.drawView1);
         drawView.setBackgroundColor(Color.BLACK);
-      //  setContentView(drawView);
+        //  setContentView(drawView); // uncomment this for visual mode.
         
         //set the sensors and manager
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -81,26 +136,47 @@ public class Accel_testActivity extends Activity   {
         
     }
     
-    // SERVER  ---------------
+    // SERVER  ------------------------------------------------------------
     private void sendString(String string) {
-
-		try {
-			DatagramSocket socket = new DatagramSocket();
-			byte[] data = string.getBytes();
-			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), port);
-			socket.send(packet);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    	if(toggleRun.isChecked())
+    	{
+			try {
+				DatagramSocket socket = new DatagramSocket();
+				byte[] data = string.getBytes();
+				DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), port);
+				socket.send(packet);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+	}
+    //-------------------------------------------------------------------  
+    //+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.sens_button_up:
+			PercentScaleMax = (float) Math.max((PercentScaleMax +.2), 0);
+			break;
+		case R.id.sens_button_down:
+			PercentScaleMax = (float) Math.max((PercentScaleMax -.2), 0);
+			break;
+		case R.id.thres_button_up:
+			DetectionThreshold = (float) Math.max((DetectionThreshold +.2), 0);
+			break;
+		case R.id.thres_button_down:
+			DetectionThreshold = (float) Math.max((DetectionThreshold -.2), 0);
+			break;
+		
 		}
 	}
-    
-    
+	//+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
+	
     private void ProcessData(float x, float y, float z)
     {
-    	float PercentScaleMax = (float) 3; 
-    	float AccelMaximum = (float) 10;
-    	float DetectionThreshold = (float) 3;
+    	//float PercentScaleMax = (float) 4; 
+    	//float AccelMaximum = (float) 10;
+    	//float DetectionThreshold = (float) 2;
     
     	//under normal operation of the accelerometer the tilting of the phone to a 90* angle will 
     	//correspond with values in the range of 0->10, however if the phone is shaken or moved quickly
@@ -129,20 +205,18 @@ public class Accel_testActivity extends Activity   {
     		PercentZ = PercentZ - DetectionThreshold*(PercentZ/Math.abs(PercentZ));
     	
     	mTextView1.setText("%-X: " + PercentX + ";\n %-Y:" + PercentY +";\n %-Z:" + PercentZ);
-    
     	
     	//---------------Pass Accelerometer data to Network Function------------------ 	
-    	
     	int RoundX =  -Math.round(PercentX);
-    	int RoundY =  -Math.round(PercentY);
+    	int RoundY =  Math.round(PercentY);
  
-    	szAccelPercent = Integer.toString(RoundX, 10) + " " + Integer.toString(RoundY, 10);
-    		
+    //	szAccelPercent = Integer.toString(RoundX, 10) + " " + Integer.toString(RoundY, 10);
+    	szAccelPercent = Float.toString(-PercentX) + " " + Float.toString(PercentY);
+    	
     	mTextView2.setText("ACCEL " + szAccelPercent);
     	sendString("ACCEL " + szAccelPercent);
 
     	//-------------Server Passing complete---------------------------------------------
-    	
     	
     	//===================== display data on view=============================
     	// adjust values to display on screen. 
@@ -150,6 +224,8 @@ public class Accel_testActivity extends Activity   {
     	float CurrY = y - mSensorY *10;
     	float CurrZ = z - mSensorZ *10;
     
+    	mSensativity.setText("" + Math.rint(10*PercentScaleMax)/10);
+    	mThreshold.setText("" + Math.rint(10*DetectionThreshold)/10);
     	// set text view to display X Y and Z values using setText and math.round to round values
     	//mTextView1.setText("x: " + Math.round(CurrX) + ";\n y:" + Math.round(CurrY) +";\n z:" + Math.round(CurrZ));
     	//mTextView1.setText("x: " + x + ";\n y:" + y +";\n z:" + z);
