@@ -29,6 +29,16 @@
             android:label="@string/prefs_name">
             
         </activity>
+        <activity 
+            android:name=".Accel_Activity" 
+            android:label="@string/accel_name">
+            
+        </activity>
+        <activity 
+            android:name=".Trackpad_Activity" 
+            android:label="@string/accel_name">
+            
+        </activity>
     </application>
 
 </manifest>

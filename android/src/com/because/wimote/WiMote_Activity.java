@@ -2,7 +2,7 @@ package com.because.wimote;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
+//import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,17 +24,20 @@ public class WiMote_Activity extends Activity {
     
     /** Main menu */
     public void button_startAccel(View view) {
-    	
+    	Intent intent = new Intent(view.getContext(), Accel_Activity.class);
+    	startActivity(intent);
     }
     public void button_startTrackpad(View view) {
-    	
+    	Intent intent = new Intent(view.getContext(), Trackpad_Activity.class);
+    	startActivity(intent);
     }
     public void button_startKeyboard(View view) {
     	Intent intent = new Intent(view.getContext(), Keyboard_Activity.class);
     	startActivity(intent);
     }
     public void button_startSettings(View view) {
-    	
+		Intent intent = new Intent(view.getContext(), Preference_Activity.class);
+		startActivity(intent);
     }
     
     /** Options menu */
