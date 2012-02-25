@@ -9,3 +9,5 @@ android/bin
 server/ipch
 Accel_test/bin
 server/wimote_server
+keyboard_test/bin
+
