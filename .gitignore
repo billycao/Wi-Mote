@@ -7,3 +7,4 @@ android/bin/*
 android/.classpath
 android/bin
 server/ipch
+Accel_test/bin
