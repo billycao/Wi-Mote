@@ -2,15 +2,10 @@ android/.project/*
 android/.settings/*
 android/gen
 android/.project
+android/
 android/bin/*
 android/.classpath
 android/bin
 server/ipch
 Accel_test/bin
-keyboard_test/bin
 server/wimote_server
-keyboard_test/.classpath
-keyboard_test/.project
-keyboard_test/.settings/
-keyboard_test/gen/
-keyboard_test/project.properties
