@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory 
+        android:title="General Settings">
+        <EditTextPreference 
+            android:title="@string/prefs_hostip"
+            android:name="Server IP"
+            android:summary="The IP address of the host PC (eg. 192.168.1.101)"
+            android:defaultValue="192.168.1.101"
+            android:key="hostname" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:title="Accelerometer Settings">
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:title="Trackpad Settings">
+        
+    </PreferenceCategory>
+
+    <PreferenceCategory 
+        android:title="Keyboard Settings">
+        
+    </PreferenceCategory>
+    
+</PreferenceScreen>
