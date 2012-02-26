@@ -2,11 +2,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/main_background"
     android:orientation="vertical" >
-
-    <TextView
+    
+    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello" />
+        android:layout_marginTop="30dp"
+        android:gravity="center" 
+        android:src="@drawable/wimote_logo"
+        android:contentDescription="@string/app_name" />
 
+    <LinearLayout 
+        android:layout_width="200dp"
+        android:layout_marginTop="80dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+        
+	    <Button 
+	        android:layout_height="wrap_content"
+	        android:layout_width="fill_parent"
+	        android:text="@string/main_accel"
+	        android:onClick="button_startAccel"
+	        />
+	    
+	    <Button 
+	        android:layout_height="wrap_content"
+	        android:layout_width="fill_parent"
+	        android:text="@string/main_trackpad"
+	        android:onClick="button_startTrackpad"
+	        />
+	    
+	    <Button 
+	        android:layout_height="wrap_content"
+	        android:layout_width="fill_parent"
+	        android:text="@string/main_keyboard"
+	        android:onClick="button_startKeyboard"
+	        />
+	    
+	    <Button 
+	        android:layout_height="wrap_content"
+	        android:layout_width="fill_parent"
+	        android:text="@string/main_settings"
+	        android:onClick="button_startSettings"
+	        />
+        
+    </LinearLayout>
+    
 </LinearLayout>

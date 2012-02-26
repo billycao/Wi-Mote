@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, WiMoteActivity!</string>
+    
     <string name="app_name">WiMote</string>
+    <string name="main_title">Master Control Activity</string>
+    
+    <string name="main_accel">Accelerometer Mode</string>
+    <string name="main_trackpad">Trackpad Mode</string>
+    <string name="main_keyboard">Keyboard Mode</string>
+    <string name="main_settings">Settings</string>
+    
+    <string name="prefs_name">Settings</string>
+    <string name="prefs_hostip">Server IP</string>
+    
+    <string name="keyboard_name">Keyboard</string>
+    
+    <string name="accel_name">Accelerometer</string>
 
 </resources>

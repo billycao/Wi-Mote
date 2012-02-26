@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	
+	    <ImageView
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:gravity="center"
+	        android:src="@drawable/wimote_logo"
+	        android:contentDescription="@string/app_name" />
+	    
+	    <TableLayout 
+	        android:layout_height="fill_parent"
+	        android:layout_width="wrap_content"
+	        android:layout_marginTop="30dp"
+	        android:layout_marginBottom="40dp"
+	        android:gravity="center_horizontal"
+	        android:layout_gravity="center_horizontal"
+	        android:orientation="vertical">
+	        
+	        <TableRow >
+			    <Button 
+			        android:layout_height="wrap_content"
+			        android:layout_width="200dp"
+			        android:text="@string/main_accel"
+			        android:onClick="button_startAccel"
+			        />
+			    
+			    <Button 
+			        android:layout_height="wrap_content"
+			        android:layout_width="200dp"
+			        android:text="@string/main_trackpad"
+			        android:onClick="button_startTrackpad"
+			        />
+	        </TableRow>
+		    
+	        <TableRow>
+			    <Button 
+			        android:layout_height="wrap_content"
+			        android:layout_width="200dp"
+			        android:text="@string/main_keyboard"
+			        android:onClick="button_startKeyboard"
+			        />
+			    
+			    <Button 
+			        android:layout_height="wrap_content"
+			        android:layout_width="200dp"
+			        android:text="@string/main_settings"
+			        android:onClick="button_startSettings"
+			        />
+	        </TableRow>
+	    </TableLayout>
+	    
+	</LinearLayout>
+	
+</ScrollView>
