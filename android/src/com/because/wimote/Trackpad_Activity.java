@@ -3,7 +3,6 @@ package com.because.wimote;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.nio.ByteBuffer;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,16 +19,15 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 	private float currX, currY = -1f;
 	private int screenHeight, screenWidth;
 	private TextView xview, yview, statusText;
+	private boolean multiTouch;
 	
 	//MouseView view;
 	
 	// var for server I/O
 	private int serverUdpPort;
 	private String hostname;
-
-	// if we want to have customizable gestures
-	// GestureDetector gestureDetector = null;
-    
+	String mouseData = new String();
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +36,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
         setContentView(R.layout.trackpad);
 		screenWidth = 480;
 		screenHeight = 800;
-		
+		multiTouch = false;
 		xview = (TextView)findViewById(R.id.trackpad_textview1);
 		yview = (TextView)findViewById(R.id.trackpad_textview2);
 		statusText = (TextView)findViewById(R.id.trackpad_textview3);
@@ -49,23 +47,19 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		ImageView temp = (ImageView)findViewById(R.id.trackpad_imageview1);
 		temp.setOnTouchListener(this);
     }
-    public boolean sendData(int x, int y)
-    {
-    	try {
-			DatagramSocket socket = new DatagramSocket();
-			ByteBuffer buffer = ByteBuffer.allocate(8);
-			buffer.putInt(0, x);
-			buffer.putInt(5, y);
-			byte[] data = buffer.array();
-			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), serverUdpPort);
-			socket.send(packet);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-    	return true;
-    }
+	
+	private void sendString(String string) {
+			try {
+				DatagramSocket socket = new DatagramSocket();
+				byte[] data = string.getBytes();
+				DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), serverUdpPort);
+				socket.send(packet);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
     private boolean ProcessData(float x, float y)
     {
     	// 
@@ -75,68 +69,38 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	currY = y;
     	if(deltax == 0 && deltay == 0)    	    	
     		return false;
-    	float resx = deltax/(float)screenWidth;
-    	float resy = deltax/(float)screenHeight;
-    	// and now cast them to a %change in the original res
-    	int perx = (int)resx*100;
-    	int pery = (int)resy*100;
+    	float perx = deltax/(float)screenWidth * 100;
+    	float pery = deltax/(float)screenHeight * 100;
+
     	// bounds checking
     	if(perx > MAX_X)
     		perx = MAX_X;
+    	else if(perx < -MAX_X)
+    		perx = -MAX_X;
     	if(pery > MAX_Y)
     		pery = MAX_Y;
+    	else if(pery < -MAX_Y)
+    		pery = -MAX_Y;
+    	
     	// for now simply update the values in display boxes
     	xview.setText(Integer.toString((int)deltax));
     	yview.setText(Integer.toString((int)deltay));
-    	// sendData(perx, pery);
+        if(multiTouch == true)
+    	{
+    		// TODO create new buffer to indicate the changes are scrolling related
+    		statusText.setText("Scrolling swag");
+    		float scroll_dir = Math.max(Math.abs(pery), Math.abs(pery));
+    		mouseData = Float.toString(scroll_dir);
+	    	sendString("MOUSE_SCROLL " + mouseData);
+    	}
+        else
+        {
+	        mouseData = Float.toString(perx) + " " + Float.toString(pery);
+	    	sendString("ACCEL " + mouseData);
+        }
     	return true;
     }
-    /*
-	public class MouseView extends SurfaceView implements Runnable{
-		
-		Thread t = null;
-		SurfaceHolder holder;
-		boolean ready = false;
-		
-		public MouseView(Context context){
-			super(context);
-			holder = getHolder();
-		}
-		
-		public void run() {
-			while(ready == true){
-				// do something
-				if(!holder.getSurface().isValid())
-					continue;
-				Canvas c = holder.lockCanvas();
-				c.drawARGB(255,69,69,69);
-				holder.unlockCanvasAndPost(c);
-			}
-		}
-		
-		public void pause(){
-			ready = false;
-			while(true){
-				try{
-					t.join();
-				}
-				catch(InterruptedException e){
-					e.printStackTrace();
-				}
-				break;
-			}
-			t = null;
-		}
-		
-		public void resume(){
-			ready = true;
-			t = new Thread(this);
-			t.start();
-		}
-		public boolean onTouch(View arg0, MotionEvent arg1) {
-			return super.onTouch(arg0, arg1);
-	}
-	*/
+    
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		try {
 			Thread.sleep(50);
@@ -158,6 +122,12 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			currX = perx;
 			currY = pery;
 			success = true;
+			break;
+		case MotionEvent.ACTION_POINTER_DOWN:
+			multiTouch = true;
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			multiTouch = false;
 			break;
 		case MotionEvent.ACTION_MOVE:
 			statusText.setText("Motion");
