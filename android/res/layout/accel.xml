@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        
+	     <LinearLayout
+	        android:id="@+id/linearLayout1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" 
+	        android:orientation="vertical" >
+		   
+	            <CheckedTextView
+	                android:id="@+id/checkedTextView1"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Sensativity"
+	                android:textSize="25px" />
+	         
+	            <Button
+			        android:id="@+id/sens_button_up"
+			        android:layout_width="60dp"
+			        android:layout_height="40dp"
+			        android:text="Up" />
+
+	            <TextView
+	                android:id="@+id/sens_text"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_marginLeft="10dp"
+	                android:text="25.2"
+	                android:textAppearance="?android:attr/textAppearanceLarge" />
+			
+			    <Button
+			        android:id="@+id/sens_button_down"
+			        android:layout_width="60dp"
+			        android:layout_height="40dp"
+			        android:text="Down" />
+
+ 		</LinearLayout>
+ 		
+ 		<LinearLayout
+	        android:id="@+id/linearLayout2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" 
+	        android:orientation="vertical" >
+			    
+ 		         <CheckedTextView
+	 		        android:id="@+id/checkedTextView2"
+	 		        android:layout_width="78dp"
+	 		        android:layout_height="wrap_content"
+	 		        android:layout_marginLeft="30dp"
+	 		        android:text="Threshold"
+	 		        android:textSize="25px" />
+ 		    
+		     	 <Button
+			        android:id="@+id/thres_button_up"
+			        android:layout_width="60dp"
+			        android:layout_height="40dp"
+			        android:layout_marginLeft="30dp"
+			        android:text="Up" />
+
+		     	 <TextView
+		     	     android:id="@+id/thres_text"
+		     	     android:layout_width="wrap_content"
+		     	     android:layout_height="wrap_content"
+		     	     android:layout_marginLeft="55dp"
+		     	     android:text="3"
+		     	     android:textAppearance="?android:attr/textAppearanceLarge" />
+
+			    <Button
+			        android:id="@+id/thres_button_down"
+			        android:layout_width="60dp"
+			        android:layout_height="40dp"
+			        android:layout_marginLeft="30dp"
+			        android:text="Down" />
+
+		</LinearLayout>
+
+ 		<ToggleButton
+ 		    android:id="@+id/toggleButton1"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="wrap_content"
+ 		    android:layout_marginLeft="30dp"
+ 		    android:layout_marginTop="50dp"
+ 		    android:text="ToggleButton" />
+ 		 
+    </LinearLayout>
+    
+		  	<TextView
+			   android:id="@+id/textView1"
+			   android:layout_width="fill_parent"
+			   android:layout_height="wrap_content" />
+
+			<TextView
+			   android:id="@+id/textView2"
+			   android:layout_width="fill_parent"
+			   android:layout_height="wrap_content" />
+			
+			<LinearLayout
+			    android:id="@+id/linearLayout2"
+			    android:layout_width="fill_parent"
+			    android:layout_height="fill_parent"
+			    android:orientation="horizontal" >
+
+			    <Button
+			        android:id="@+id/Mouse_left"
+			        android:layout_width="wrap_content"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="0.35"
+			        android:text="Left_Mouse" />
+
+			    <Button
+			        android:id="@+id/Mouse_Right"
+			        android:layout_width="wrap_content"
+			        android:layout_height="fill_parent"
+			        android:layout_weight="0.27"
+			        android:text="Right_Mouse" />
+
+			</LinearLayout>
+			
+</LinearLayout>
