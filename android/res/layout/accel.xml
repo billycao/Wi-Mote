@@ -8,78 +8,76 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/Accel_linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         
         
 	     <LinearLayout
-	        android:id="@+id/linearLayout1"
+	        android:id="@+id/Accel_linearLayoutchild1"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" 
 	        android:orientation="vertical" >
 		   
 	            <CheckedTextView
-	                android:id="@+id/checkedTextView1"
+	                android:id="@+id/Accel_checkedTextView1"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:text="Sensativity"
-	                android:textSize="25px" />
+	                android:textSize="20dp" />
 	         
 	            <Button
-			        android:id="@+id/sens_button_up"
-			        android:layout_width="60dp"
+			        android:id="@+id/Accel_sens_button_up"
+			        android:layout_width="65dp"
 			        android:layout_height="40dp"
 			        android:text="Up" />
 
 	            <TextView
-	                android:id="@+id/sens_text"
+	                android:id="@+id/Accel_sens_text"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_marginLeft="10dp"
-	                android:text="25.2"
 	                android:textAppearance="?android:attr/textAppearanceLarge" />
 			
 			    <Button
-			        android:id="@+id/sens_button_down"
-			        android:layout_width="60dp"
+			        android:id="@+id/Accel_sens_button_down"
+			        android:layout_width="65dp"
 			        android:layout_height="40dp"
 			        android:text="Down" />
 
  		</LinearLayout>
  		
  		<LinearLayout
-	        android:id="@+id/linearLayout2"
+	        android:id="@+id/Accel_linearLayout2"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" 
 	        android:orientation="vertical" >
-			    
+			    
  		         <CheckedTextView
-	 		        android:id="@+id/checkedTextView2"
-	 		        android:layout_width="78dp"
-	 		        android:layout_height="wrap_content"
-	 		        android:layout_marginLeft="30dp"
-	 		        android:text="Threshold"
-	 		        android:textSize="25px" />
+ 		             android:id="@+id/Accel_checkedTextView2"
+ 		             android:layout_width="wrap_content"
+ 		             android:layout_height="wrap_content"
+ 		             android:layout_marginLeft="30dp"
+ 		             android:text="Threshold"
+ 		             android:textSize="20dp" />
  		    
 		     	 <Button
-			        android:id="@+id/thres_button_up"
-			        android:layout_width="60dp"
+			        android:id="@+id/Accel_thres_button_up"
+			        android:layout_width="65dp"
 			        android:layout_height="40dp"
 			        android:layout_marginLeft="30dp"
 			        android:text="Up" />
 
 		     	 <TextView
-		     	     android:id="@+id/thres_text"
+		     	     android:id="@+id/Accel_thres_text"
 		     	     android:layout_width="wrap_content"
 		     	     android:layout_height="wrap_content"
 		     	     android:layout_marginLeft="55dp"
-		     	     android:text="3"
 		     	     android:textAppearance="?android:attr/textAppearanceLarge" />
 
 			    <Button
-			        android:id="@+id/thres_button_down"
-			        android:layout_width="60dp"
+			        android:id="@+id/Accel_thres_button_down"
+			        android:layout_width="65dp"
 			        android:layout_height="40dp"
 			        android:layout_marginLeft="30dp"
 			        android:text="Down" />
@@ -87,40 +85,40 @@
 		</LinearLayout>
 
  		<ToggleButton
- 		    android:id="@+id/toggleButton1"
+ 		    android:id="@+id/Accel_toggleButton1"
  		    android:layout_width="wrap_content"
  		    android:layout_height="wrap_content"
- 		    android:layout_marginLeft="30dp"
+ 		    android:layout_marginLeft="15dp"
  		    android:layout_marginTop="50dp"
  		    android:text="ToggleButton" />
  		 
     </LinearLayout>
     
 		  	<TextView
-			   android:id="@+id/textView1"
+			   android:id="@+id/Accel_textView1"
 			   android:layout_width="fill_parent"
 			   android:layout_height="wrap_content" />
 
 			<TextView
-			   android:id="@+id/textView2"
+			   android:id="@+id/Accel_textView2"
 			   android:layout_width="fill_parent"
 			   android:layout_height="wrap_content" />
 			
 			<LinearLayout
-			    android:id="@+id/linearLayout2"
+			    android:id="@+id/Accel_linearLayoutchild2"
 			    android:layout_width="fill_parent"
 			    android:layout_height="fill_parent"
 			    android:orientation="horizontal" >
 
 			    <Button
-			        android:id="@+id/Mouse_left"
+			        android:id="@+id/Accel_Mouse_left"
 			        android:layout_width="wrap_content"
 			        android:layout_height="fill_parent"
 			        android:layout_weight="0.35"
 			        android:text="Left_Mouse" />
 
 			    <Button
-			        android:id="@+id/Mouse_Right"
+			        android:id="@+id/Accel_Mouse_Right"
 			        android:layout_width="wrap_content"
 			        android:layout_height="fill_parent"
 			        android:layout_weight="0.27"
