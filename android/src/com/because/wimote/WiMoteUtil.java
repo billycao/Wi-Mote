@@ -13,7 +13,6 @@ import android.preference.PreferenceManager;
 import android.widget.ToggleButton;
 
 public class WiMoteUtil {
-	// Eventually, we will provide a way for the user to enter the hostname.
 	private String hostname;
 	private int port;
 
