@@ -1,14 +1,14 @@
 package com.because.wimote;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,17 +16,56 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     /** Called when the activity is first created. */
 	// variables for mouse I/O
 	private int MAX_X, MAX_Y = 30;
-	private float currX, currY = -1f;
+	private float currX, currY;
 	private int screenHeight, screenWidth;
-	private TextView xview, yview, statusText;
-	private boolean multiTouch;
+	private boolean multiTouch, leftClick, rightClick;
+	private WiMoteUtil util;
+	SharedPreferences.Editor editPref;
 	
-	//MouseView view;
-	
-	// var for server I/O
-	private int serverUdpPort;
-	private String hostname;
+	// variables for server I/O
 	String mouseData = new String();
+	
+	// variables for testing
+	private TextView xview, yview, statusText;
+	
+	private OnTouchListener buttonListener = new OnTouchListener() {
+
+		public boolean onTouch(View button, MotionEvent event) {
+			boolean ret = false;
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				if (button.getId() == R.id.trackpad_left && rightClick == false){
+					statusText.setText("Left Click Detected");
+					util.sendString("MOUSE_LEFT_DOWN");
+					ret = leftClick = true;
+				}
+				else if (button.getId() == R.id.trackpad_right && leftClick == false){
+					statusText.setText("Right Click Detected");
+					util.sendString("MOUSE_RIGHT_DOWN");
+					ret = rightClick = true;
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				if (button.getId() == R.id.trackpad_left && leftClick == true){
+					statusText.setText("Left Release Detected");
+					util.sendString("MOUSE_LEFT_UP");
+					leftClick = false;
+					ret = true;
+				}
+				else if (button.getId() == R.id.trackpad_right && rightClick == true){
+					statusText.setText("Right Release Detected");
+					util.sendString("MOUSE_RIGHT_UP");
+					rightClick = false;
+					ret = true;
+				}
+				break;
+			default:
+				break;
+			}
+			
+			return ret;
+		}
+	};
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,31 +73,31 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
         // set view
         System.out.println("beginning init\n");
         setContentView(R.layout.trackpad);
-		screenWidth = 480;
-		screenHeight = 800;
-		multiTouch = false;
+        
+        // screen interface variables
+        DisplayMetrics display = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(display);
+		screenWidth = display.widthPixels;
+		screenHeight = display.heightPixels;
+		((Button)findViewById(R.id.trackpad_left)).setOnTouchListener(buttonListener);
+        ((Button)findViewById(R.id.trackpad_right)).setOnTouchListener(buttonListener);
+        ((ImageView)findViewById(R.id.trackpad_imageview1)).setOnTouchListener(this);
+        
+        
+		// helper variables
+		multiTouch = leftClick = rightClick = false;
+		util = new WiMoteUtil(this);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		editPref = settings.edit();
+		
+		// set text
 		xview = (TextView)findViewById(R.id.trackpad_textview1);
 		yview = (TextView)findViewById(R.id.trackpad_textview2);
 		statusText = (TextView)findViewById(R.id.trackpad_textview3);
 		xview.setText(Integer.toString((int) currX));
     	yview.setText(Integer.toString((int) currY));
     	statusText.setText("Successful initialization");
-    	
-		ImageView temp = (ImageView)findViewById(R.id.trackpad_imageview1);
-		temp.setOnTouchListener(this);
     }
-	
-	private void sendString(String string) {
-			try {
-				DatagramSocket socket = new DatagramSocket();
-				byte[] data = string.getBytes();
-				DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), serverUdpPort);
-				socket.send(packet);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	}
 	
     private boolean ProcessData(float x, float y)
     {
@@ -83,20 +122,22 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     		pery = -MAX_Y;
     	
     	// for now simply update the values in display boxes
-    	xview.setText(Integer.toString((int)deltax));
-    	yview.setText(Integer.toString((int)deltay));
-        if(multiTouch == true)
+    	xview.setText("deltaX: " + Integer.toString((int)deltax));
+    	yview.setText("deltaY: " + Integer.toString((int)deltay));
+        
+    	// beginning of gestures
+    	if(multiTouch == true)
     	{
-    		// TODO create new buffer to indicate the changes are scrolling related
     		statusText.setText("Scrolling swag");
     		float scroll_dir = Math.max(Math.abs(pery), Math.abs(pery));
     		mouseData = Float.toString(scroll_dir);
-	    	sendString("MOUSE_SCROLL " + mouseData);
+	    	util.sendString("MOUSE_SCROLL " + mouseData);
     	}
+    	// single finger motion
         else
         {
 	        mouseData = Float.toString(perx) + " " + Float.toString(pery);
-	    	sendString("ACCEL " + mouseData);
+	    	util.sendString("ACCEL " + mouseData);
         }
     	return true;
     }

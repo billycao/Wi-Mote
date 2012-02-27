@@ -20,5 +20,6 @@
     <string name="prefs_accel_threshold">Mouse Detection Threshold</string>
     
     <string name="prefs_accel_sensativity">Mouse Sensativity</string>
+    <string name="trackpad_image_desc">A simple overlay to interface with touch input</string>
 
 </resources>

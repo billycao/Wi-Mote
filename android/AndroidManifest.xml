@@ -35,6 +35,7 @@
             
         </activity>
         <activity 
+            android:screenOrientation="sensor"
             android:name=".Trackpad_Activity" 
             android:label="@string/accel_name">
             
