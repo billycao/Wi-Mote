@@ -15,9 +15,7 @@ import android.widget.TextView;
 public class Trackpad_Activity extends Activity implements OnTouchListener{
     /** Called when the activity is first created. */
 	// variables for mouse I/O
-	private int MAX_X, MAX_Y = 30;
-	private float currX, currY;
-	private int screenHeight, screenWidth;
+	private float currX, currY, screenHeight, screenWidth, MAX;
 	private boolean multiTouch, leftClick, rightClick;
 	private WiMoteUtil util;
 	SharedPreferences.Editor editPref;
@@ -78,7 +76,10 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
         DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
 		screenWidth = display.widthPixels;
-		screenHeight = display.heightPixels;
+		screenHeight = (float)display.heightPixels * 0.8f;
+		MAX = 30f;
+		
+		// touch variables
 		((Button)findViewById(R.id.trackpad_left)).setOnTouchListener(buttonListener);
         ((Button)findViewById(R.id.trackpad_right)).setOnTouchListener(buttonListener);
         ((ImageView)findViewById(R.id.trackpad_imageview1)).setOnTouchListener(this);
@@ -112,14 +113,14 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	float pery = deltax/(float)screenHeight * 100;
 
     	// bounds checking
-    	if(perx > MAX_X)
-    		perx = MAX_X;
-    	else if(perx < -MAX_X)
-    		perx = -MAX_X;
-    	if(pery > MAX_Y)
-    		pery = MAX_Y;
-    	else if(pery < -MAX_Y)
-    		pery = -MAX_Y;
+    	if(perx > MAX)
+    		perx = MAX;
+    	else if(perx < -MAX)
+    		perx = -MAX;
+    	if(pery > MAX)
+    		pery = MAX;
+    	else if(pery < -MAX)
+    		pery = -MAX;
     	
     	// for now simply update the values in display boxes
     	xview.setText("deltaX: " + Integer.toString((int)deltax));
