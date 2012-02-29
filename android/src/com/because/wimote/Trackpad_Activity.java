@@ -109,8 +109,8 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	currY = y;
     	if(deltax == 0 && deltay == 0)    	    	
     		return false;
-    	float perx = deltax/(float)screenWidth * 100;
-    	float pery = deltax/(float)screenHeight * 100;
+    	float perx = deltax/screenWidth * 100;
+    	float pery = deltax/screenHeight * 100;
 
     	// bounds checking
     	if(perx > MAX)
@@ -130,15 +130,23 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	if(multiTouch == true)
     	{
     		statusText.setText("Scrolling swag");
-    		float scroll_dir = Math.max(Math.abs(pery), Math.abs(pery));
-    		mouseData = Float.toString(scroll_dir);
-	    	util.sendString("MOUSE_SCROLL " + mouseData);
+    		
+    		if(Math.abs(perx) > Math.abs(pery))
+    		{
+    			mouseData = Float.toString(perx);
+    	    	util.sendString("MOUSE_HSCROLL " + mouseData);
+    		}
+    		else
+    		{
+    			mouseData = Float.toString(pery);
+    	    	util.sendString("MOUSE_SCROLL " + mouseData);
+    		}
     	}
     	// single finger motion
         else
         {
 	        mouseData = Float.toString(perx) + " " + Float.toString(pery);
-	    	util.sendString("ACCEL " + mouseData);
+	    	util.sendString("MOUSE_DELTA " + mouseData);
         }
     	return true;
     }
