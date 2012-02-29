@@ -9,51 +9,57 @@ using namespace std;
 static const char *szDelim = " ";
 
 static void WINAPI mouseClick(DWORD dwAction);
+static void WINAPI moveMouse(const char *szCoords, BOOL bAbsolute);
+static void WINAPI turnMouseWheel(const char *szAmount, DWORD dwDirection);
 static void WINAPI processKeyStream(const char *szKeyStream, BOOL bKeyUp);
-static void WINAPI extractCoords(const char *szCoords, PCOORD pc);
-static void WINAPI moveMouse(PCOORD pc, BOOL bAbsolute);
 
-// KEY_DOWN key-stream
-// KEY_UP key-stream
-// key-stream is a stream of space-delimited keys to be pressed/released simultaneously.
+// The processStream() function takes in a string received from the client
+// (the Android device) and parses it. This string should be in one of the
+// following formats:
 //
-// ACCEL x y
-// Accelerometer mouse function.
-// Set mouse position based on change in coordinates, based on x, y values derived from accelerometer.
-// x range: [-30, 30]
-// y range: [-30, 30]
+//     KEY_DOWN key-stream
+//     KEY_UP key-stream
 //
-// TPAD x y
-// Trackpad mouse function.
-// Set mouse position based on change in coordinates, based on x, y values derived from touchscreen.
-// x range: ?
-// y range: ?
+//         Description: Press or release key(s). key-stream is a stream of
+//                      space-delimited keys to be pressed or released
+//                      simultaneously.
 //
-// TABLET x y
-// Tablet mouse function.
-// Set mouse position based on absolute (x, y) coordinates.
-// x range: [0, 65535]
-// y range: [0, 65535]
+//     MOUSE_DELTA x y
 //
-// MOUSE_LEFT_DOWN
-// MOUSE_LEFT_UP
-// MOUSE_RIGHT_DOWN
-// MOUSE_RIGHT_UP
-// MOUSE_MIDDLE_DOWN
-// MOUSE_MIDDLE_UP
-// Click/release mouse buttons.
+//         Description: Set mouse position based on change in coordinates. There
+//                      are no specific units for (x, y), so optimal values are
+//                      best determined by testing and trial-and-error.
 //
-// MOUSE_VSCROLL amount
-// MOUSE_ZOOM amount
-// amount is the number of notches to turn the mouse wheel.
-// Positive means wheel rotated away from user (scroll up / zoom in).
-// Negative means wheel rotated toward user (scroll down / zoom out).
+//     MOUSE_ABS x y
 //
-// MOUSE_HSCROLL amount
-// Horizontal scroll.
-// amount is the number of notches to turn the mouse wheel.
-// Positive means wheel scroll right.
-// Negative means wheel scroll left.
+//         Description: Set mouse position based on absolute coordinates.
+//                      x range: [0, 65535]
+//                      y range: [0, 65535]
+//
+//     MOUSE_LEFT_DOWN
+//     MOUSE_LEFT_UP
+//     MOUSE_RIGHT_DOWN
+//     MOUSE_RIGHT_UP
+//     MOUSE_MIDDLE_DOWN
+//     MOUSE_MIDDLE_UP
+//
+//         Description: Click or release mouse buttons.
+//
+//     MOUSE_SCROLL amount
+//     MOUSE_HSCROLL amount
+//
+//         Description: Use the mouse wheel to scroll vertically or horizontally.
+//                      amount is the number of notches to turn the mouse wheel.
+//                      amount > 0: Wheel rotated AWAY from user
+//                                  (scroll up / scroll right / zoom in).
+//                      amount < 0: Wheel rotated TOWARD user
+//                                  (scroll down / scroll left / zoom out).
+//
+//     MOUSE_ZOOM amount
+//
+//         Description: Use the mouse wheel to zoom.
+//                      amount =  1: Zoom in.
+//                      amount = -1: Zoom out.
 
 void WINAPI processStream(const char *szStream)
 {
@@ -81,13 +87,10 @@ void WINAPI processStream(const char *szStream)
 		processKeyStream(szParams, FALSE);
 	else if (!strcmp(szAction, "KEY_UP"))
 		processKeyStream(szParams, TRUE);
-	else if (!strcmp(szAction, "ACCEL")) {
-		COORD c;
-		extractCoords(szParams, &c);
-		moveMouse(&c, FALSE);
-	}
-	/*else if (!strcmp(szAction, "MOUSE_ABS"))
-		;*/
+	else if (!strcmp(szAction, "MOUSE_DELTA"))
+		moveMouse(szParams, FALSE);
+	else if (!strcmp(szAction, "MOUSE_ABS"))
+		moveMouse(szParams, TRUE);
 	else if (!strcmp(szAction, "MOUSE_LEFT_DOWN"))
 		mouseClick(MOUSEEVENTF_LEFTDOWN);
 	else if (!strcmp(szAction, "MOUSE_LEFT_UP"))
@@ -100,10 +103,15 @@ void WINAPI processStream(const char *szStream)
 		mouseClick(MOUSEEVENTF_MIDDLEDOWN);
 	else if (!strcmp(szAction, "MOUSE_MIDDLE_UP"))
 		mouseClick(MOUSEEVENTF_MIDDLEUP);
-	/*else if (!strcmp(szAction, "MOUSE_SCROLL"))
-		;
-	else if (!strcmp(szAction, "MOUSE_ZOOM"))
-		;*/
+	else if (!strcmp(szAction, "MOUSE_HSCROLL"))
+		turnMouseWheel(szParams, MOUSEEVENTF_HWHEEL);
+	else if (!strcmp(szAction, "MOUSE_SCROLL"))
+		turnMouseWheel(szParams, MOUSEEVENTF_WHEEL);
+	else if (!strcmp(szAction, "MOUSE_ZOOM")) {
+		processKeyStream("CTRL", FALSE);
+		turnMouseWheel(szParams, MOUSEEVENTF_WHEEL);
+		processKeyStream("CTRL", TRUE);
+	}
 
 	free(szStreamDup);
 }
@@ -118,15 +126,18 @@ static void WINAPI mouseClick(DWORD dwAction)
 	SendInput(_countof(inputArray), inputArray, sizeof(INPUT));
 }
 
-static void WINAPI extractCoords(const char *szCoords, PCOORD pc)
+static void WINAPI moveMouse(const char *szCoords, BOOL bAbsolute)
 {
-	if (!szCoords || !pc)
+	if (!szCoords)
 		return;
 
 	// Duplicate szCoords into a separate, temporary buffer for strtok_s.
 	char *szCoordsDup = _strdup(szCoords);
 	if (!szCoordsDup)
 		return;
+
+	INPUT input;
+	ZeroMemory(&input, sizeof(input));
 
 	// Find x.
 	char *szNext = NULL;
@@ -135,7 +146,7 @@ static void WINAPI extractCoords(const char *szCoords, PCOORD pc)
 		free(szCoordsDup);
 		return;
 	}
-	pc->X = atoi(szCoord);
+	input.mi.dx = atoi(szCoord);
 
 	// Find y.
 	szCoord = strtok_s(NULL, szDelim, &szNext);
@@ -143,24 +154,26 @@ static void WINAPI extractCoords(const char *szCoords, PCOORD pc)
 		free(szCoordsDup);
 		return;
 	}
-	pc->Y = atoi(szCoord);
+	input.mi.dy = atoi(szCoord);
 
 	free(szCoordsDup);
+
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_MOVE | (bAbsolute ? (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK) : 0);
+	INPUT inputArray[] = {input};
+	SendInput(_countof(inputArray), inputArray, sizeof(INPUT));
 }
 
-static void WINAPI moveMouse(PCOORD pc, BOOL bAbsolute)
+static void WINAPI turnMouseWheel(const char *szAmount, DWORD dwDirection)
 {
-	if (!pc)
+	if (!szAmount)
 		return;
 
 	INPUT input;
 	ZeroMemory(&input, sizeof(input));
 	input.type = INPUT_MOUSE;
-	input.mi.dx = pc->X;
-	input.mi.dy = pc->Y;
-	//input.mi.mouseData = 0;
-	input.mi.dwFlags = MOUSEEVENTF_MOVE | (bAbsolute ? (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK) : 0);
-
+	input.mi.mouseData = atoi(szAmount) * WHEEL_DELTA;
+	input.mi.dwFlags = dwDirection;
 	INPUT inputArray[] = {input};
 	SendInput(_countof(inputArray), inputArray, sizeof(INPUT));
 }
