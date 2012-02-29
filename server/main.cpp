@@ -67,7 +67,7 @@ int main()
 		if (iResult == SOCKET_ERROR) {
 			wprintf(L"recvfrom failed with error %d\n", WSAGetLastError());
 		}
-		printf("Received data: %s\n", RecvBuf);
+		//printf("Received data: %s\n", RecvBuf);
 
 		processStream(RecvBuf);
 	}
