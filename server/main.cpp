@@ -25,7 +25,7 @@ INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_COMMAND:
 			switch (LOWORD(wParam)) {
 				case IDC_ABOUT:
-					MessageBox(hDlg, TEXT("WiMote\t...Because!\n\n(C) 2012. All rights reserved.\n\nBilly Cao - GitHub, Master Control Activity\nJames Hung - Keyboard, Server\nSaqib Mohammed - Accelerometer Mouse\nSayan Samanta - Tablet, Trackpad"), TEXT("About WiMote"), MB_OK);
+					MessageBox(hDlg, TEXT("WiMote\t...Because!\n\n(C) 2012. All rights reserved.\n\nBilly Cao - GitHub, Master Control Activity\nJames Hung - Keyboard, Server\nSaqib Mohammad - Accelerometer Mouse\nSayan Samanta - Tablet, Trackpad"), TEXT("About WiMote"), MB_OK);
 					break;
 				case IDC_STARTSTOP:
 					if (!bServerRunning) {
