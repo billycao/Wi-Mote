@@ -16,5 +16,8 @@
     <string name="keyboard_name">Keyboard</string>
     
     <string name="accel_name">Accelerometer</string>
+    <string name="status_notconnected">Not Connected</string>
+    <string name="status_connecting">Connecting&#8230;</string>
+    <string name="status_connected">Connected!</string>
 
 </resources>
