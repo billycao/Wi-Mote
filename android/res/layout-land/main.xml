@@ -17,6 +17,12 @@
 	        android:src="@drawable/wimote_logo"
 	        android:contentDescription="@string/app_name" />
 	    
+	    <TextView android:id="@+id/connection_status_txt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:drawableLeft="@drawable/status_red"
+	        android:text="@string/status_notconnected" />
+    
 	    <TableLayout 
 	        android:layout_height="fill_parent"
 	        android:layout_width="wrap_content"
