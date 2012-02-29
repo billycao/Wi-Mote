@@ -1,89 +1,75 @@
-// TODO: Tweak server code to fit our needs (right now is pretty much copy &
-//       paste from Microsoft example).
-
-#define WIN32_LEAN_AND_MEAN
-
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <Windows.h>
 #include <tchar.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "resource.h"
 
-// Link with ws2_32.lib
-#pragma comment(lib, "Ws2_32.lib")
+#pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-extern void WINAPI processStream(const char *szStream);
+static const LPCTSTR lpszStart = TEXT("&Start Server");
+static const LPCTSTR lpszStop = TEXT("&Stop Server");
 
-int main()
+static HINSTANCE hInst = NULL;
+static HANDLE hThread = NULL;
+static DWORD dwThreadId = 0;
+BOOL bServerRunning = FALSE;
+
+extern DWORD WINAPI serverThread(LPVOID lpParam);
+
+INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	int iResult = 0;
-
-	WSADATA wsaData;
-
-	SOCKET RecvSocket;
-	sockaddr_in RecvAddr;
-
-	unsigned short Port = 27015;
-
-	char RecvBuf[1024];
-	int BufLen = 1024;
-
-	sockaddr_in SenderAddr;
-	int SenderAddrSize = sizeof (SenderAddr);
-
-	//-----------------------------------------------
-	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != NO_ERROR) {
-		wprintf(L"WSAStartup failed with error %d\n", iResult);
-		return 1;
+	switch (uMsg) {
+		case WM_INITDIALOG:
+			SetDlgItemText(hDlg, IDC_STARTSTOP, lpszStart);
+			SetDlgItemText(hDlg, IDC_IPADDR, TEXT("TODO!!"));
+			SetDlgItemText(hDlg, IDC_PORT, TEXT("TODO!!"));
+			return TRUE;
+		case WM_COMMAND:
+			switch (LOWORD(wParam)) {
+				case IDC_ABOUT:
+					MessageBox(hDlg, TEXT("WiMote\t...Because!\n\n(C) 2012. All rights reserved.\n\nBilly Cao - GitHub, Master Control Activity\nJames Hung - Keyboard, Server\nSaqib Mohammad - Accelerometer Mouse\nSayan Samanta - Tablet, Trackpad"), TEXT("About WiMote"), MB_OK);
+					break;
+				case IDC_STARTSTOP:
+					if (!bServerRunning) {
+						bServerRunning = TRUE;
+						hThread = CreateThread(NULL, 0, serverThread, NULL, 0, &dwThreadId);
+						if (hThread) {
+							SetDlgItemText(hDlg, IDC_STARTSTOP, lpszStop);
+							SendDlgItemMessage(hDlg, IDC_BANNER, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)LoadImage(hInst, MAKEINTRESOURCE(IDB_WIMOTESTARTED), IMAGE_BITMAP, 0, 0, LR_SHARED));
+							ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_HIDE);
+							ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_SHOW);
+						}
+						else
+							bServerRunning = FALSE;
+					}
+					else {
+						bServerRunning = FALSE;
+						CloseHandle(hThread);
+						hThread = NULL;
+						SetDlgItemText(hDlg, IDC_STARTSTOP, lpszStart);
+						SendDlgItemMessage(hDlg, IDC_BANNER, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)LoadImage(hInst, MAKEINTRESOURCE(IDB_WIMOTE), IMAGE_BITMAP, 0, 0, LR_SHARED));
+						ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_HIDE);
+						ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_SHOW);
+					}
+					break;
+				case IDCANCEL:
+					bServerRunning = FALSE;
+					CloseHandle(hThread);
+					EndDialog(hDlg, TRUE);
+					break;
+				default:
+					break;
+			}
+			return 0;
+		default:
+			break;
 	}
-	//-----------------------------------------------
-	// Create a receiver socket to receive datagrams
-	RecvSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (RecvSocket == INVALID_SOCKET) {
-		wprintf(L"socket failed with error %d\n", WSAGetLastError());
-		return 1;
-	}
-	//-----------------------------------------------
-	// Bind the socket to any address and the specified port.
-	RecvAddr.sin_family = AF_INET;
-	RecvAddr.sin_port = htons(Port);
-	RecvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	return FALSE;
+}
 
-	iResult = bind(RecvSocket, (SOCKADDR *) & RecvAddr, sizeof (RecvAddr));
-	if (iResult != 0) {
-		wprintf(L"bind failed with error %d\n", WSAGetLastError());
-		return 1;
-	}
-	for (;;) {
-		//-----------------------------------------------
-		// Call the recvfrom function to receive datagrams
-		// on the bound socket.
-		ZeroMemory(RecvBuf, BufLen);
-		iResult = recvfrom(RecvSocket,
-						   RecvBuf, BufLen, 0, (SOCKADDR *) & SenderAddr, &SenderAddrSize);
-		if (iResult == SOCKET_ERROR) {
-			wprintf(L"recvfrom failed with error %d\n", WSAGetLastError());
-		}
-		//printf("Received data: %s\n", RecvBuf);
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	hInst = hInstance;
 
-		processStream(RecvBuf);
-	}
- 
-	//-----------------------------------------------
-	// Close the socket when finished receiving datagrams
-	wprintf(L"Finished receiving. Closing socket.\n");
-	iResult = closesocket(RecvSocket);
-	if (iResult == SOCKET_ERROR) {
-		wprintf(L"closesocket failed with error %d\n", WSAGetLastError());
-		return 1;
-	}
+	DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAIN), NULL, (DLGPROC)dlgProc);
 
-	//-----------------------------------------------
-	// Clean up and exit.
-	wprintf(L"Exiting.\n");
-	WSACleanup();
 	return 0;
 }
