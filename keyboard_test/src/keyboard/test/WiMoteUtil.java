@@ -1,23 +1,22 @@
-package com.because.wimote;
+package keyboard.test;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
-import com.because.wimote.R;
+import keyboard.test.R;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.widget.ToggleButton;
 
 public class WiMoteUtil {
-	private String hostname;
-	private int port;
+	// Eventually, we will provide a way for the user to enter the hostname.
+	private static final String hostname = "169.232.111.xxx";
+	private static final int port = 27015;
 
-	private Activity activity;
-	private ArrayList<String> depressedKeyStreams = new ArrayList<String>();
+	private static Activity activity;
+	private static ArrayList<String> depressedKeyStreams = new ArrayList<String>();
 
 	public static final int[] KEY_IDS = {R.id.A, R.id.Apostrophe, R.id.B, R.id.Backslash, R.id.Backspace, R.id.C, R.id.CapsLock, R.id.Comma, R.id.D, R.id.Dash, R.id.Down, R.id.E, R.id.Eight, R.id.Enter, R.id.Equals, R.id.Esc, R.id.F, R.id.Five, R.id.Four, R.id.G, R.id.Grave, R.id.H, R.id.I, R.id.J, R.id.K, R.id.L, R.id.Left, R.id.LeftClick, R.id.LeftSquareBracket, R.id.M, R.id.N, R.id.Nine, R.id.O, R.id.One, R.id.P, R.id.Period, R.id.Q, R.id.R, R.id.Right, R.id.RightClick, R.id.RightSquareBracket, R.id.S, R.id.Semicolon, R.id.Seven, R.id.Six, R.id.Slash, R.id.Space, R.id.T, R.id.Tab, R.id.Three, R.id.Two, R.id.U, R.id.Up, R.id.V, R.id.W, R.id.X, R.id.Y, R.id.Z, R.id.Zero};
 	public static final String[] KEY_NAMES = {"a", "'", "b", "\\", "BACKSPACE", "c", "CAPS", ",", "d", "-", "DOWN", "e", "8", "ENTER", "=", "ESC", "f", "5", "4", "g", "`", "h", "i", "j", "k", "l", "LEFT", "MOUSE_LEFT_CLICK", "[", "m", "n", "9", "o", "1", "p", ".", "q", "r", "RIGHT", "MOUSE_RIGHT_CLICK", "]", "s", ";", "7", "6", "/", "SPACE", "t", "TAB", "3", "2", "u", "UP", "v", "w", "x", "y", "z", "0"};
@@ -41,7 +40,7 @@ public class WiMoteUtil {
 		return "";
 	}
 
-	public void sendString(String string) {
+	public static void sendString(String string) {
 		try {
 			DatagramSocket socket = new DatagramSocket();
 			byte[] data = string.getBytes();
@@ -55,9 +54,6 @@ public class WiMoteUtil {
 
 	public WiMoteUtil(Activity a) {
 		activity = a;
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(activity);
-		hostname = settings.getString("hostname", "192.168.1.101");
-		port = 27015;	// TODO: Port number hardcoded for now!
 	}
 
 	public void processKeys(String szKeyAction, String szKeyName) {

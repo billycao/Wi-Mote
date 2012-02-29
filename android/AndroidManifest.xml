@@ -31,10 +31,11 @@
         </activity>
         <activity 
             android:name=".Accel_Activity" 
-            android:label="@string/accel_name">
+            android:label="@string/accel_name" android:screenOrientation="portrait">
             
         </activity>
         <activity 
+            android:screenOrientation="sensor"
             android:name=".Trackpad_Activity" 
             android:label="@string/accel_name">
             

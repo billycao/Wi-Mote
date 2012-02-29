@@ -2,6 +2,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory 
         android:title="Accelerometer Settings">
-        
+        <EditTextPreference 
+            android:title="@string/prefs_accel_sensativity"
+            android:name="Mouse Sensativity"
+            android:summary="The Sensativity of the accelerometer mouse"
+            android:defaultValue="4.0"
+            android:key="aSensativity" />
+        <EditTextPreference 
+            android:title="@string/prefs_accel_threshold"
+            android:name="Mouse Detection Threshold"
+            android:summary="The tilt threshold before detection begins"
+            android:defaultValue="2.0"
+            android:key="aThreshold" />
     </PreferenceCategory>
 </PreferenceScreen>
