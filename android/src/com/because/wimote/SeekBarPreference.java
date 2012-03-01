@@ -80,7 +80,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
    this.monitorBox.setTypeface(Typeface.MONOSPACE, Typeface.ITALIC);
    this.monitorBox.setLayoutParams(params3);
    this.monitorBox.setPadding(2, 5, 0, 0);
-   this.monitorBox.setText(bar.getProgress()+"");
+   this.monitorBox.setText(bar.getProgress()+"%");
    
    layout.addView(view);
    layout.addView(layout2);

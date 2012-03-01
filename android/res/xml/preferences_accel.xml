@@ -8,7 +8,7 @@
                 android:key="aMouseSensitivity"
                 android:name="Mouse Sensitivity"
                 android:defaultValue="32" 
-                android:title="Mouse Sensitivity"/>
+                android:title="Accel. Mouse Sensitivity"/>
         
         
         <EditTextPreference 

@@ -15,7 +15,9 @@ import android.widget.TextView;
 public class Trackpad_Activity extends Activity implements OnTouchListener{
     /** Called when the activity is first created. */
 	// variables for mouse I/O
-	private float currX, currY, screenHeight, screenWidth, MAX, track_Sensitivity;;
+	private float currX, currY, MAX, track_Sensitivity, trackSensitivityMax;
+	//private float  screenHeight, screenWidth; //TODO don't need for trackpad, will for tablet
+	private int MouseSensitivityPercent;
 	private boolean multiTouch, leftClick, rightClick;
 	private WiMoteUtil util;
 	SharedPreferences.Editor editPref;
@@ -75,9 +77,10 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
         // screen interface variables
         DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
-		screenWidth = display.widthPixels;
-		screenHeight = (float)display.heightPixels * 0.8f;
+		//screenWidth = display.widthPixels;
+	//	screenHeight = (float)display.heightPixels * 0.8f;  //TODO remove? (we will need this for tablet input)
 		MAX = 30f;
+		trackSensitivityMax = 4;
 		
 		
 		// touch variables
@@ -92,7 +95,9 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		editPref = settings.edit();
 		
-		track_Sensitivity = (float) Float.parseFloat(settings.getString("aTrack_Sensitivity", "1.5f"));
+		//track_Sensitivity = (float) Float.parseFloat(settings.getString("aTrack_Sensitivity", "1.5f"));
+		MouseSensitivityPercent = settings.getInt("aMouseSensitivity", 50);
+		track_Sensitivity = trackSensitivityMax * ((float)MouseSensitivityPercent/100);
 		
 		// set text
 		xview = (TextView)findViewById(R.id.trackpad_textview1);
