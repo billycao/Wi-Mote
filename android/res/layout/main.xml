@@ -18,9 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingTop="15dp"
-        android:drawableLeft="@drawable/status_red"
-        android:drawablePadding="4dp"
-        android:text="@string/status_notconnected" />
+        android:text="@string/because" />
     
     <LinearLayout 
         android:layout_width="200dp"
