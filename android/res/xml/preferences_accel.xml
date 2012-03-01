@@ -3,11 +3,11 @@
     <PreferenceCategory 
         android:title="Accelerometer Settings">
         <EditTextPreference 
-            android:title="@string/prefs_accel_sensativity"
-            android:name="Mouse Sensativity"
+            android:title="@string/prefs_accel_sensitivity"
+            android:name="Mouse Sensitivity"
             android:summary="The Sensativity of the accelerometer mouse"
             android:defaultValue="4.0"
-            android:key="aSensativity" />
+            android:key="aSensitivity" />
         <EditTextPreference 
             android:title="@string/prefs_accel_threshold"
             android:name="Mouse Detection Threshold"

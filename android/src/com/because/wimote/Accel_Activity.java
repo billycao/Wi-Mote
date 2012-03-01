@@ -38,11 +38,11 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     private float PercentX, PercentY, PercentZ = 0f;
     
   //  private TextView mTextView1, mTextView2; // TODO remove test output
-    private TextView mSensativity, mThreshold;
+    private TextView mSensitivity, mThreshold;
     ToggleButton toggleRun;
     
     //For Accel________________________
-	float PercentScaleMax = (float) 6;//Float.parseFloat(accel_settings.getString("aSensativity", "4.0f"));
+	float PercentScaleMax = (float) 6;//Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
 	float AccelMaximum = (float) 10;
 	float DetectionThreshold = (float) 2; //Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));; 
     
@@ -95,7 +95,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
         SharedPreferences accel_settings = PreferenceManager.getDefaultSharedPreferences(this);
     	pref_editor = accel_settings.edit();
     	
-    	PercentScaleMax = (float) Float.parseFloat(accel_settings.getString("aSensativity", "4.0f"));
+    	PercentScaleMax = (float) Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
     	AccelMaximum = (float) 10;
     	DetectionThreshold = (float) Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));; 
         
@@ -105,7 +105,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
       //  mTextView1 = (TextView)findViewById(R.id.Accel_textView1);
        // mTextView2 = (TextView)findViewById(R.id.Accel_textView2);
         
-        mSensativity = (TextView) findViewById(R.id.Accel_sens_text);
+        mSensitivity = (TextView) findViewById(R.id.Accel_sens_text);
         mThreshold = (TextView) findViewById(R.id.Accel_thres_text);
         
         Button buttonSensUp = (Button) findViewById(R.id.Accel_sens_button_up);
@@ -204,7 +204,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	szAccelPercent = Float.toString(-PercentX) + " " + Float.toString(PercentY);
     	
     //	mTextView2.setText("ACCEL " + szAccelPercent);  // test output
-    	util.sendString("ACCEL " + szAccelPercent);
+    	util.sendString("MOUSE_DELTA " + szAccelPercent);
 
     	//-------------Server Passing complete---------------------------------------------
     	
@@ -216,7 +216,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	float CurrZ = z - mSensorZ *10;
     */
     	
-    	mSensativity.setText("" + Math.rint(10*PercentScaleMax)/10);
+    	mSensitivity.setText("" + Math.rint(10*PercentScaleMax)/10);
     	mThreshold.setText("" + Math.rint(10*DetectionThreshold)/10);
     	// set text view to display X Y and Z values using setText and math.round to round values
 	    
@@ -240,7 +240,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     @Override
     protected void onStop(){
         mSensorManager.unregisterListener(mySensorListener);
-        pref_editor.putString("aSensativity", Float.toString(PercentScaleMax));
+        pref_editor.putString("aSensitivity", Float.toString(PercentScaleMax));
 		pref_editor.putString("aThreshold", Float.toString(DetectionThreshold));
 		pref_editor.commit();
         super.onStop();
