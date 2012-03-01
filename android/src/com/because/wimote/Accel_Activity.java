@@ -175,8 +175,13 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	
     	//Scale and limit the Accelerometer data to a range between 0->30 (representing percent value for mouse movement)
     	PercentX = Math.min(x, AccelMaximum)*PercentScaleMax;
-    	PercentY = Math.min(y, AccelMaximum)*PercentScaleMax;;
-    	PercentZ = Math.min(z, AccelMaximum)*PercentScaleMax;
+    	PercentY = Math.min(y, AccelMaximum)*PercentScaleMax;
+    	//PercentZ = Math.min(z, AccelMaximum)*PercentScaleMax;
+    
+    	PercentX = Math.max(PercentX, -AccelMaximum)*PercentScaleMax;
+    	PercentY = Math.max(PercentY, -AccelMaximum)*PercentScaleMax;
+    	//PercentZ = -Math.max(z, -AccelMaximum)*PercentScaleMax;
+    	
     	
     	//to ignore noise while holding the phone still.
     	if(Math.abs(PercentX) < DetectionThreshold)

@@ -109,10 +109,11 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	currY = y;
     	if(deltax == 0 && deltay == 0)    	    	
     		return false;
-    	float perx = deltax/screenWidth * 100;
-    	float pery = deltax/screenHeight * 100;
+    	float perx = deltax; ///screenWidth * 100;
+    	float pery = deltay; ///screenHeight * 100;
 
     	// bounds checking
+    	/*
     	if(perx > MAX)
     		perx = MAX;
     	else if(perx < -MAX)
@@ -121,10 +122,23 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     		pery = MAX;
     	else if(pery < -MAX)
     		pery = -MAX;
+    	*/
+    	
+    	//replace 1.5 with sensitituty
+    	perx = (float) (Math.min(perx, MAX)*1.5); //*track_Sensitivity;
+    	pery = (float) (Math.min(pery, MAX)*1.5); //*track_Sensitivity;
+    	
+    	perx = (float) (Math.max(perx, -MAX)*1.5); //*track_Sensitivity;
+    	pery = (float) (Math.max(pery, -MAX)*1.5); //*track_Sensitivity;
+
+    	//orientation fix? confirmed, -1 fixed direction Stays fixed even if screen rotates..
+    	perx = perx*-1; 
+    	pery = pery*-1;
+    	
     	
     	// for now simply update the values in display boxes
-    	xview.setText("deltaX: " + Integer.toString((int)deltax));
-    	yview.setText("deltaY: " + Integer.toString((int)deltay));
+    	xview.setText("deltaX: " + Integer.toString((int)perx));
+    	yview.setText("deltaY: " + Integer.toString((int)pery));
         
     	// beginning of gestures
     	if(multiTouch == true)
@@ -153,7 +167,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		try {
-			Thread.sleep(50);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 			e.printStackTrace();
