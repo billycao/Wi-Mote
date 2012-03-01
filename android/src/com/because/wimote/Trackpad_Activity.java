@@ -120,19 +120,6 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	float perx = deltax; ///screenWidth * 100;
     	float pery = deltay; ///screenHeight * 100;
 
-    	// bounds checking
-    	/*
-    	if(perx > MAX)
-    		perx = MAX;
-    	else if(perx < -MAX)
-    		perx = -MAX;
-    	if(pery > MAX)
-    		pery = MAX;
-    	else if(pery < -MAX)
-    		pery = -MAX;
-    	*/
-    	
-    	//replace 1.5 with sensitituty
     	perx = (float) (Math.min(perx, MAX)*track_Sensitivity);
     	pery = (float) (Math.min(pery, MAX)*track_Sensitivity);
     	
@@ -155,12 +142,12 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     		
     		if(Math.abs(perx) > Math.abs(pery))
     		{
-    			mouseData = Float.toString(perx);
+    			mouseData = Float.toString(perx/20);
     	    	util.sendString("MOUSE_HSCROLL " + mouseData);
     		}
     		else
     		{
-    			mouseData = Float.toString(pery);
+    			mouseData = Float.toString(-pery/20);
     	    	util.sendString("MOUSE_SCROLL " + mouseData);
     		}
     	}
@@ -175,7 +162,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		try {
-			Thread.sleep(0);
+			Thread.sleep(0, 10000);
 		} catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -189,6 +176,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		switch(arg1.getAction())
 		{
 		case MotionEvent.ACTION_UP:
+			multiTouch = false;
 		case MotionEvent.ACTION_DOWN:
 			statusText.setText("Single touch");
 			currX = perx;
@@ -196,17 +184,20 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			success = true;
 			break;
 		case MotionEvent.ACTION_POINTER_DOWN:
+			statusText.setText("AP down");
 			multiTouch = true;
 			break;
 		case MotionEvent.ACTION_POINTER_UP:
+			statusText.setText("AP Up");
 			multiTouch = false;
 			break;
 		case MotionEvent.ACTION_MOVE:
-			//statusText.setText("Motion");
+			statusText.setText("Motion");
 			success = ProcessData(perx, pery);
 			break;
 		default:
 			statusText.setText("Other touch type detected!");
+			multiTouch = true;
 			success = true;
 			break;
 		}

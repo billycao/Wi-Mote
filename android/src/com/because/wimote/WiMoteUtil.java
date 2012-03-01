@@ -10,6 +10,7 @@ import com.because.wimote.R;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.ToggleButton;
 
 public class WiMoteUtil {
@@ -47,6 +48,7 @@ public class WiMoteUtil {
 			byte[] data = string.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), port);
 			socket.send(packet);
+			socket.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

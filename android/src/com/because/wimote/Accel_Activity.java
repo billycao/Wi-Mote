@@ -92,7 +92,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	
     	MouseSensitivityPercent = accel_settings.getInt("aMouseSensitivity", 50);
     	//Accel_Sensitivity_Max = (float) Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
-    	AccelMaximum = (float) 10;
+    	AccelMaximum = 10f;
     	DetectionThreshold = (float) Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));
     	
         //testing output TODO: remove test
@@ -162,7 +162,10 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	//the value may exceed 10, so the .min function will limit the value to 10, this is then scaled 
     	//up to 30, representing 30% of the screen traveled in a unit of time (TBD)
     		
+    	//TODO: set once in beginning.
     	float PerS = Accel_Sensitivity_Max*((float)MouseSensitivityPercent)/100;
+    	
+    	//TODO: can we reduce multiplications
     	//Scale and limit the Accelerometer data to a range between 0->30 (representing percent value for mouse movement)
     	PercentX = Math.min(x, AccelMaximum)*PerS;
     	PercentY = Math.min(y, AccelMaximum)*PerS;
