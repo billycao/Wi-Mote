@@ -42,16 +42,11 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     ToggleButton toggleRun;
     
     //For Accel________________________
-	float PercentScaleMax = (float) 6;//Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
+	float Accel_Sensitivity_Max = (float) 10;//Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
 	float AccelMaximum = (float) 10;
-	float DetectionThreshold = (float) 2; //Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));; 
-    
-	/*
-    //For Graphics________________________
-    DrawView drawView;    
-    int width = 480;
-    int height = 800;
-*/
+	float DetectionThreshold = (float) 2; //Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));
+	int MouseSensitivityPercent = 50;
+	
     //for server________________________________________
     String szAccelPercent = new String();
 
@@ -95,10 +90,10 @@ public class Accel_Activity extends Activity implements OnClickListener  {
         SharedPreferences accel_settings = PreferenceManager.getDefaultSharedPreferences(this);
     	pref_editor = accel_settings.edit();
     	
-    	PercentScaleMax = (float) Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
+    	MouseSensitivityPercent = accel_settings.getInt("aMouseSensitivity", 50);
+    	//Accel_Sensitivity_Max = (float) Float.parseFloat(accel_settings.getString("aSensitivity", "4.0f"));
     	AccelMaximum = (float) 10;
-    	DetectionThreshold = (float) Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));; 
-        
+    	DetectionThreshold = (float) Float.parseFloat(accel_settings.getString("aThreshold", "2.0f"));
     	
         //testing output TODO: remove test
        
@@ -121,14 +116,8 @@ public class Accel_Activity extends Activity implements OnClickListener  {
         ((Button)findViewById(R.id.Accel_Mouse_Right)).setOnTouchListener(buttonListener);
 
         toggleRun = (ToggleButton)findViewById(R.id.Accel_toggleButton1);
-       
-        /*khj
-        //for Graphics
-        drawView = new DrawView(this);
-        // drawView = (DrawView)findViewById(R.id.drawView1);
-        drawView.setBackgroundColor(Color.BLACK);
-        //  setContentView(drawView); // uncomment this for visual mode.
-        */
+        toggleRun.setChecked(true);
+    	
         //set the sensors and manager
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         sensors = mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
@@ -145,10 +134,10 @@ public class Accel_Activity extends Activity implements OnClickListener  {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.Accel_sens_button_up:
-			PercentScaleMax = (float) Math.max((PercentScaleMax +.2), 0);
+			MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent + 1), 0);
 			break;
 		case R.id.Accel_sens_button_down:
-			PercentScaleMax = (float) Math.max((PercentScaleMax -.2), 0);
+			MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent -1), 0);
 			break;
 		case R.id.Accel_thres_button_up:
 			DetectionThreshold = (float) Math.max((DetectionThreshold +.2), 0);
@@ -157,14 +146,14 @@ public class Accel_Activity extends Activity implements OnClickListener  {
 			DetectionThreshold = (float) Math.max((DetectionThreshold -.2), 0);
 			break;
 		}
-		PercentScaleMax = (float) Math.rint(10*PercentScaleMax)/10;
+		//Accel_Sensitivity_Max = (float) Math.rint(10*Accel_Sensitivity_Max)/10;
 		DetectionThreshold = (float) Math.rint(10*DetectionThreshold)/10;
 	}
 	//+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
 	
     private void ProcessData(float x, float y, float z)
     {
-    	//float PercentScaleMax = (float) 4; 
+    	//float Accel_Sensitivity_Max = (float) 4; 
     	//float AccelMaximum = (float) 10;
     	//float DetectionThreshold = (float) 2;
     
@@ -172,15 +161,18 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	//correspond with values in the range of 0->10, however if the phone is shaken or moved quickly
     	//the value may exceed 10, so the .min function will limit the value to 10, this is then scaled 
     	//up to 30, representing 30% of the screen traveled in a unit of time (TBD)
-    	
+    		
+    	float PerS = Accel_Sensitivity_Max*((float)MouseSensitivityPercent)/100;
     	//Scale and limit the Accelerometer data to a range between 0->30 (representing percent value for mouse movement)
-    	PercentX = Math.min(x, AccelMaximum)*PercentScaleMax;
-    	PercentY = Math.min(y, AccelMaximum)*PercentScaleMax;
-    	//PercentZ = Math.min(z, AccelMaximum)*PercentScaleMax;
+    	PercentX = Math.min(x, AccelMaximum)*PerS;
+    	PercentY = Math.min(y, AccelMaximum)*PerS;
+    	//PercentZ = Math.min(z, AccelMaximum)*Accel_Sensitivity_Max;
     
-    	PercentX = Math.max(PercentX, -AccelMaximum)*PercentScaleMax;
-    	PercentY = Math.max(PercentY, -AccelMaximum)*PercentScaleMax;
-    	//PercentZ = -Math.max(z, -AccelMaximum)*PercentScaleMax;
+    	PercentX = Math.max(PercentX, -AccelMaximum)*PerS;
+    	PercentY = Math.max(PercentY, -AccelMaximum)*PerS;
+    	//PercentZ = -Math.max(z, -AccelMaximum)*Accel_Sensitivity_Max;
+
+    		
     	
     	
     	//to ignore noise while holding the phone still.
@@ -199,7 +191,6 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	else
     		PercentZ = PercentZ - DetectionThreshold*(PercentZ/Math.abs(PercentZ));
     	
-    	//mTextView1.setText("%-X: " + PercentX + ";\n %-Y:" + PercentY +";\n %-Z:" + PercentZ); //test output
     	
     	//---------------Pass Accelerometer data to Network Function------------------ 	
     	//int RoundX =  -Math.round(PercentX);
@@ -209,7 +200,8 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	szAccelPercent = Float.toString(-PercentX) + " " + Float.toString(PercentY);
     	
     //	mTextView2.setText("ACCEL " + szAccelPercent);  // test output
-    	util.sendString("MOUSE_DELTA " + szAccelPercent);
+    	if(toggleRun.isChecked())
+    		util.sendString("MOUSE_DELTA " + szAccelPercent);
 
     	//-------------Server Passing complete---------------------------------------------
     	
@@ -221,11 +213,10 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	float CurrZ = z - mSensorZ *10;
     */
     	
-    	mSensitivity.setText("" + Math.rint(10*PercentScaleMax)/10);
+    //	mSensitivity.setText("" + Math.rint(10*Accel_Sensitivity_Max)/10);
+    	mSensitivity.setText("" + MouseSensitivityPercent + "%");
     	mThreshold.setText("" + Math.rint(10*DetectionThreshold)/10);
-    	// set text view to display X Y and Z values using setText and math.round to round values
-	    
-	    //drawView.invalidate();
+    	
 	    //=============================== display data on display==================
     }
     
@@ -245,7 +236,8 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     @Override
     protected void onStop(){
         mSensorManager.unregisterListener(mySensorListener);
-        pref_editor.putString("aSensitivity", Float.toString(PercentScaleMax));
+      //  pref_editor.putString("aSensitivity", Float.toString(Accel_Sensitivity_Max));
+        pref_editor.putInt("aMouseSensitivity", MouseSensitivityPercent);
 		pref_editor.putString("aThreshold", Float.toString(DetectionThreshold));
 		pref_editor.commit();
         super.onStop();

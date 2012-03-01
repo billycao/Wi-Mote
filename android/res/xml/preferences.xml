@@ -2,6 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory 
         android:title="General Settings">
+ 
         <EditTextPreference 
             android:title="@string/prefs_hostip"
             android:name="Server IP"

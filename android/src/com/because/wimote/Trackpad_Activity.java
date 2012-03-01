@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class Trackpad_Activity extends Activity implements OnTouchListener{
     /** Called when the activity is first created. */
 	// variables for mouse I/O
-	private float currX, currY, screenHeight, screenWidth, MAX;
+	private float currX, currY, screenHeight, screenWidth, MAX, track_Sensitivity;;
 	private boolean multiTouch, leftClick, rightClick;
 	private WiMoteUtil util;
 	SharedPreferences.Editor editPref;
@@ -79,6 +79,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		screenHeight = (float)display.heightPixels * 0.8f;
 		MAX = 30f;
 		
+		
 		// touch variables
 		((Button)findViewById(R.id.trackpad_left)).setOnTouchListener(buttonListener);
         ((Button)findViewById(R.id.trackpad_right)).setOnTouchListener(buttonListener);
@@ -90,6 +91,8 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		util = new WiMoteUtil(this);
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		editPref = settings.edit();
+		
+		track_Sensitivity = (float) Float.parseFloat(settings.getString("aTrack_Sensitivity", "1.5f"));
 		
 		// set text
 		xview = (TextView)findViewById(R.id.trackpad_textview1);
@@ -125,11 +128,11 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	*/
     	
     	//replace 1.5 with sensitituty
-    	perx = (float) (Math.min(perx, MAX)*1.5); //*track_Sensitivity;
-    	pery = (float) (Math.min(pery, MAX)*1.5); //*track_Sensitivity;
+    	perx = (float) (Math.min(perx, MAX)*track_Sensitivity);
+    	pery = (float) (Math.min(pery, MAX)*track_Sensitivity);
     	
-    	perx = (float) (Math.max(perx, -MAX)*1.5); //*track_Sensitivity;
-    	pery = (float) (Math.max(pery, -MAX)*1.5); //*track_Sensitivity;
+    	perx = (float) (Math.max(perx, -MAX)*track_Sensitivity);
+    	pery = (float) (Math.max(pery, -MAX)*track_Sensitivity);
 
     	//orientation fix? confirmed, -1 fixed direction Stays fixed even if screen rotates..
     	perx = perx*-1; 
@@ -194,7 +197,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			multiTouch = false;
 			break;
 		case MotionEvent.ACTION_MOVE:
-			statusText.setText("Motion");
+			//statusText.setText("Motion");
 			success = ProcessData(perx, pery);
 			break;
 		default:

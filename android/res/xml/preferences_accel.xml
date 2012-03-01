@@ -2,12 +2,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory 
         android:title="Accelerometer Settings">
-        <EditTextPreference 
-            android:title="@string/prefs_accel_sensitivity"
-            android:name="Mouse Sensitivity"
-            android:summary="The Sensativity of the accelerometer mouse"
-            android:defaultValue="4.0"
-            android:key="aSensitivity" />
+                
+        <com.because.wimote.SeekBarPreference
+            
+                android:key="aMouseSensitivity"
+                android:name="Mouse Sensitivity"
+                android:defaultValue="32" 
+                android:title="Mouse Sensitivity"/>
+        
+        
         <EditTextPreference 
             android:title="@string/prefs_accel_threshold"
             android:name="Mouse Detection Threshold"
