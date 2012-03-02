@@ -10,7 +10,6 @@ import com.because.wimote.R;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.ToggleButton;
 
 public class WiMoteUtil {

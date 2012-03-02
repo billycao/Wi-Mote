@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -18,8 +20,9 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 	private float currX, currY, MAX, track_Sensitivity, trackSensitivityMax;
 	//private float  screenHeight, screenWidth; //TODO don't need for trackpad, will for tablet
 	private int MouseSensitivityPercent;
-	private boolean multiTouch, leftClick, rightClick;
+	private boolean multiTouch, leftClick, rightClick, doubleTap;
 	private WiMoteUtil util;
+	private GestureDetector gestures;
 	SharedPreferences.Editor editPref;
 	
 	// variables for server I/O
@@ -67,6 +70,27 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		}
 	};
 	
+	class GestureLearner extends GestureDetector.SimpleOnGestureListener {
+		@Override
+		public boolean onDoubleTap(MotionEvent e)
+		{
+			statusText.setText("Left Click Detected");
+			doubleTap = true;
+			util.sendString("MOUSE_LEFT_DOWN");
+			return leftClick;
+		}
+		public boolean onDoubleTapEvent(MotionEvent e)
+		{
+			if(e.getAction() == MotionEvent.ACTION_MOVE)
+			{
+				float perx = e.getX()*e.getXPrecision();
+				float pery = e.getY()*e.getYPrecision();
+				return ProcessData(perx, pery);
+			}
+			return false;
+		}
+	};
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,8 +102,9 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
         DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
 		//screenWidth = display.widthPixels;
-	//	screenHeight = (float)display.heightPixels * 0.8f;  //TODO remove? (we will need this for tablet input)
-		MAX = 30f;
+        //screenHeight = (float)display.heightPixels * 0.8f;  //TODO remove? (we will need this for tablet input)
+		
+        MAX = 30f;
 		trackSensitivityMax = 4;
 		
 		
@@ -87,10 +112,10 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		((Button)findViewById(R.id.trackpad_left)).setOnTouchListener(buttonListener);
         ((Button)findViewById(R.id.trackpad_right)).setOnTouchListener(buttonListener);
         ((ImageView)findViewById(R.id.trackpad_imageview1)).setOnTouchListener(this);
-        
+        gestures = new GestureDetector(this, new GestureLearner());
         
 		// helper variables
-		multiTouch = leftClick = rightClick = false;
+		multiTouch = leftClick = rightClick = doubleTap =  false;
 		util = new WiMoteUtil(this);
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		editPref = settings.edit();
@@ -108,7 +133,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	statusText.setText("Successful initialization");
     }
 	
-    private boolean ProcessData(float x, float y)
+	private boolean ProcessData(float x, float y)
     {
     	// 
     	float deltax = currX - x;
@@ -168,6 +193,10 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			e.printStackTrace();
 		}
 		boolean success = false;
+		
+		if(gestures.onTouchEvent(arg1))
+			return true;
+		
 		float perx = arg1.getX()*arg1.getXPrecision();
 		float pery = arg1.getY()*arg1.getYPrecision();
 			
@@ -176,7 +205,12 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		switch(arg1.getAction())
 		{
 		case MotionEvent.ACTION_UP:
+			statusText.setText("Release");
 			multiTouch = false;
+			if(doubleTap)
+				util.sendString("MOUSE_LEFT_UP");
+			success = true;
+			break;
 		case MotionEvent.ACTION_DOWN:
 			statusText.setText("Single touch");
 			currX = perx;
@@ -184,7 +218,6 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			success = true;
 			break;
 		case MotionEvent.ACTION_POINTER_DOWN:
-			statusText.setText("AP down");
 			multiTouch = true;
 			break;
 		case MotionEvent.ACTION_POINTER_UP:
@@ -192,11 +225,11 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			multiTouch = false;
 			break;
 		case MotionEvent.ACTION_MOVE:
-			statusText.setText("Motion");
 			success = ProcessData(perx, pery);
 			break;
 		default:
 			statusText.setText("Other touch type detected!");
+			Log.d("double tap", Integer.toString(arg1.getAction()));
 			multiTouch = true;
 			success = true;
 			break;
