@@ -56,7 +56,27 @@ static BOOL WINAPI getSavePort(HWND hDlg)
 	}
 }
 
-INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK aboutDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg) {
+		case WM_INITDIALOG:
+			return TRUE;
+		case WM_COMMAND:
+			switch (LOWORD(wParam)) {
+				case IDCANCEL:
+					EndDialog(hDlg, TRUE);
+					break;
+				default:
+					break;
+			}
+			return 0;
+		default:
+			break;
+	}
+	return FALSE;
+}
+
+static INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg) {
 		case WM_INITDIALOG:
@@ -122,7 +142,7 @@ INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_COMMAND:
 			switch (LOWORD(wParam)) {
 				case IDC_ABOUT:
-					MessageBox(hDlg, TEXT("WiMote\t...Because!\n\n(C) 2012. All rights reserved.\n\nBilly Cao - GitHub, Master Control Activity\nJames Hung - Keyboard, Server\nSaqib Mohammad - Accelerometer Mouse\nSayan Samanta - Tablet, Trackpad"), TEXT("About WiMote"), MB_OK);
+					DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUT), hDlg, (DLGPROC)aboutDlgProc);
 					break;
 				case IDC_STARTSTOP:
 					if (!bServerRunning) {
