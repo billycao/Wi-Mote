@@ -62,7 +62,6 @@ INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_INITDIALOG:
 		{
 			{
-				SetDlgItemText(hDlg, IDC_IPADDR, TEXT("n/a"));
 				char name[1024];
 				if (gethostname(name, sizeof(name)) == 0) {
 					struct addrinfo *result = NULL;
@@ -108,16 +107,16 @@ INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 				}
 			}
-			SetDlgItemText(hDlg, IDC_STARTSTOP, lpszStart);
 			int p = (int)GetPrivateProfileInt(lpszIniSection, lpszIniKey, defaultPort, lpszIniFile);
 			if (IS_PORT_VALID(p))
 				port = p;
 			else
 				port = defaultPort;
-			TCHAR tszPort[64];
+			TCHAR tszPort[portStringLen + 1];
 			ZeroMemory(tszPort, sizeof(tszPort));
-			if (_itot_s(port, tszPort, _countof(tszPort), 10) == 0)
+			if (_itot_s(port, tszPort, portStringLen, 10) == 0)
 				SetDlgItemText(hDlg, IDC_PORT, tszPort);
+			SetDlgItemText(hDlg, IDC_STARTSTOP, lpszStart);
 			return TRUE;
 		}
 		case WM_COMMAND:
