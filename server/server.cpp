@@ -14,6 +14,8 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 extern BOOL bServerRunning;
+extern int port;
+extern WSADATA wsaData;
 
 extern void WINAPI processStream(const char *szStream);
 
@@ -21,12 +23,8 @@ DWORD WINAPI serverThread(LPVOID lpParam)
 {
 	int iResult = 0;
 
-	WSADATA wsaData;
-
 	SOCKET RecvSocket;
 	sockaddr_in RecvAddr;
-
-	unsigned short Port = 27015;
 
 	char RecvBuf[1024];
 	int BufLen = 1024;
@@ -34,13 +32,6 @@ DWORD WINAPI serverThread(LPVOID lpParam)
 	sockaddr_in SenderAddr;
 	int SenderAddrSize = sizeof (SenderAddr);
 
-	//-----------------------------------------------
-	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != NO_ERROR) {
-		wprintf(L"WSAStartup failed with error %d\n", iResult);
-		return 1;
-	}
 	//-----------------------------------------------
 	// Create a receiver socket to receive datagrams
 	RecvSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -51,7 +42,7 @@ DWORD WINAPI serverThread(LPVOID lpParam)
 	//-----------------------------------------------
 	// Bind the socket to any address and the specified port.
 	RecvAddr.sin_family = AF_INET;
-	RecvAddr.sin_port = htons(Port);
+	RecvAddr.sin_port = htons((USHORT)port);
 	RecvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	iResult = bind(RecvSocket, (SOCKADDR *) & RecvAddr, sizeof (RecvAddr));
@@ -86,9 +77,5 @@ DWORD WINAPI serverThread(LPVOID lpParam)
 		return 1;
 	}
 
-	//-----------------------------------------------
-	// Clean up and exit.
-	wprintf(L"Exiting.\n");
-	WSACleanup();
 	return 0;
 }
