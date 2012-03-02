@@ -161,7 +161,13 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	//correspond with values in the range of 0->10, however if the phone is shaken or moved quickly
     	//the value may exceed 10, so the .min function will limit the value to 10, this is then scaled 
     	//up to 30, representing 30% of the screen traveled in a unit of time (TBD)
-    		
+    	try {
+			Thread.sleep(0, 10000);
+		} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
     	//TODO: set once in beginning.
     	float PerS = Accel_Sensitivity_Max*((float)MouseSensitivityPercent)/100;
     	
