@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 
 public class WiMoteUtil {
 	private String hostname;
+	private int pin;
 	private int port;
 
 	private Activity activity;
@@ -41,8 +42,9 @@ public class WiMoteUtil {
 		return "";
 	}
 
-	public void sendString(String string) {
+	public void sendString(String s) {
 		try {
+			String string = Integer.toString(pin) + " " + s;
 			DatagramSocket socket = new DatagramSocket();
 			byte[] data = string.getBytes();
 			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), port);
@@ -58,6 +60,7 @@ public class WiMoteUtil {
 		activity = a;
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(activity);
 		hostname = settings.getString("hostname", "192.168.1.101");
+		pin = 1337;		// TODO: PIN hardcoded for now!
 		port = 27015;	// TODO: Port number hardcoded for now!
 	}
 

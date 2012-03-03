@@ -6,54 +6,70 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <tchar.h>
+#include <time.h>
 #include "resource.h"
 
 #pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-#define IS_PORT_VALID(x) x >= 0 && x <= 65535
+#define IS_SHORT(x) (x >= 0 && x <= 65535)
 
-static const int defaultPort = 27015;
-static const int portStringLen = 64;
-static const LPCTSTR lpszIniFile = TEXT(".\\WiMote.ini");
-static const LPCTSTR lpszIniKey = TEXT("Port");
-static const LPCTSTR lpszIniSection = TEXT("WiMote");
-static const LPCTSTR lpszStart = TEXT("&Start Server");
-static const LPCTSTR lpszStop = TEXT("&Stop Server");
+static const int nameLen = 1024;
+static const int portSafeThreshold = 10000;
+static const int shortStringLen = 16;
+static LPCTSTR lpszIniFile = TEXT(".\\WiMote.ini");
+static LPCTSTR lpszIniKeyPin = TEXT("PIN");
+static LPCTSTR lpszIniKeyPort = TEXT("Port");
+static LPCTSTR lpszIniSection = TEXT("WiMote");
+static LPCTSTR lpszStart = TEXT("&Start Server");
+static LPCTSTR lpszStop = TEXT("&Stop Server");
 
 static DWORD dwThreadId = 0;
 static HANDLE hThread = NULL;
 static HINSTANCE hInst = NULL;
 
 BOOL bServerRunning = FALSE;
-int port = defaultPort;
+HWND hDlgMain = NULL;
+int port = 27015;
+int pin = 0;
 WSADATA wsaData;
 
 extern DWORD WINAPI serverThread(LPVOID lpParam);
 
-static BOOL WINAPI getSavePort(HWND hDlg)
+static int WINAPI getSaveSettings(HWND hDlg)
 {
-	TCHAR tszPort[portStringLen + 1];
-	ZeroMemory(tszPort, sizeof(tszPort));
-	if (GetDlgItemText(hDlg, IDC_PORT, tszPort, portStringLen) != 0) {
-		int p = _ttoi(tszPort);
-		if (IS_PORT_VALID(p)) {
-			port = p;
-			if (WritePrivateProfileString(lpszIniSection, lpszIniKey, tszPort, lpszIniFile))
-				return TRUE;
-			else {
-				MessageBox(hDlg, TEXT("Error saving port to INI file."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
-				return FALSE;
-			}
+	TCHAR tszBuffer[shortStringLen + 1];
+
+	ZeroMemory(tszBuffer, shortStringLen + 1);
+	if (GetDlgItemText(hDlg, IDC_PORT, tszBuffer, shortStringLen) != 0) {
+		int i = _ttoi(tszBuffer);
+		if (IS_SHORT(i)) {
+			port = i;
+			if (port <= portSafeThreshold)
+				MessageBox(hDlg, TEXT("You have chosen a port number below 10000, which is not recommended for security reasons."), TEXT("Wi-Mote Warning"), MB_OK | MB_ICONEXCLAMATION);
+			if (!WritePrivateProfileString(lpszIniSection, lpszIniKeyPort, tszBuffer, lpszIniFile))
+				return -1;
 		}
-		else {
-			MessageBox(hDlg, TEXT("Port range must be 0-65535."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
-			return FALSE;
+		else
+			return 0;
+	}
+	else
+		return -1;
+
+	ZeroMemory(tszBuffer, shortStringLen + 1);
+	if (GetDlgItemText(hDlg, IDC_PIN, tszBuffer, shortStringLen) != 0) {
+		int i = _ttoi(tszBuffer);
+		if (IS_SHORT(i)) {
+			pin = i;
+			if (!WritePrivateProfileString(lpszIniSection, lpszIniKeyPin, tszBuffer, lpszIniFile))
+				return -1;
 		}
+		else
+			return 0;
 	}
-	else {
-		MessageBox(hDlg, TEXT("Error getting port from user input."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
-		return FALSE;
-	}
+	else
+		return -1;
+
+	return 1;
 }
 
 static INT_PTR CALLBACK aboutDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -81,62 +97,52 @@ static INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 	switch (uMsg) {
 		case WM_INITDIALOG:
 		{
-			{
-				char name[1024];
-				if (gethostname(name, sizeof(name)) == 0) {
-					struct addrinfo *result = NULL;
-					if (getaddrinfo(name, NULL, NULL, &result) == 0) {
-						size_t count = 0;
-						for (struct addrinfo *ptr = result; ptr != NULL; ptr = ptr->ai_next)
-							count++;
-						size_t len = count * 64;
-						char *szIpAddr = (char *)calloc(len + 1, sizeof(char));
-						if (szIpAddr) {
-							ZeroMemory(szIpAddr, len + 1);
-							for (struct addrinfo *ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-								switch (ptr->ai_family) {
-									case AF_INET: {
-										struct sockaddr_in *sockaddr_ipv4 = (struct sockaddr_in *)ptr->ai_addr;
-										if (sockaddr_ipv4) {
-											if (strlen(szIpAddr) > 0)
-												strcat_s(szIpAddr, len, ", ");
-											strcat_s(szIpAddr, len, inet_ntoa(sockaddr_ipv4->sin_addr));
-										}
-										break;
-									}
-									/*case AF_INET6: {
-										LPSOCKADDR sockaddr_ip = (LPSOCKADDR)ptr->ai_addr;
-										DWORD ipbufferlength = 46;
-										char ipstringbuffer[46];
-										if (WSAAddressToStringA(sockaddr_ip, (DWORD)ptr->ai_addrlen, NULL, ipstringbuffer, &ipbufferlength) == 0) {
-											if (strlen(szIpAddr) > 0)
-												strcat_s(szIpAddr, len, ", ");
-											strcat_s(szIpAddr, len, ipstringbuffer);
-										}
-										break;
-									}*/
-									default:
-										break;
-								}
+			hDlgMain = hDlg;
+			char name[nameLen + 1];
+			ZeroMemory(name, nameLen + 1);
+			if (gethostname(name, nameLen) == 0) {
+				struct addrinfo *result = NULL;
+				char *szIpAddr = NULL;
+				if (getaddrinfo(name, NULL, NULL, &result) == 0 && result) {
+					for (struct addrinfo *ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+						if (ptr->ai_family == AF_INET) {
+							struct sockaddr_in *sockaddr_ipv4 = (struct sockaddr_in *)ptr->ai_addr;
+							if (sockaddr_ipv4) {
+								szIpAddr = inet_ntoa(sockaddr_ipv4->sin_addr);
+								break;
 							}
-							if (strlen(szIpAddr) > 0)
-								SetDlgItemTextA(hDlg, IDC_IPADDR, szIpAddr);
-							free(szIpAddr);
 						}
-						freeaddrinfo(result);
 					}
+					if (szIpAddr)
+						SetDlgItemTextA(hDlg, IDC_IPADDR, szIpAddr);
+					freeaddrinfo(result);
 				}
 			}
-			int p = (int)GetPrivateProfileInt(lpszIniSection, lpszIniKey, defaultPort, lpszIniFile);
-			if (IS_PORT_VALID(p))
-				port = p;
-			else
-				port = defaultPort;
-			TCHAR tszPort[portStringLen + 1];
-			ZeroMemory(tszPort, sizeof(tszPort));
-			if (_itot_s(port, tszPort, portStringLen, 10) == 0)
-				SetDlgItemText(hDlg, IDC_PORT, tszPort);
+
+			srand((unsigned int)time(NULL));
+			do {
+				pin = rand();
+			} while (!(pin >= 10000 && pin <= 65535));
+
+			int i = 0;
+			TCHAR tszBuffer[shortStringLen + 1];
+
+			i = (int)GetPrivateProfileInt(lpszIniSection, lpszIniKeyPort, port, lpszIniFile);
+			if (IS_SHORT(i))
+				port = i;
+			ZeroMemory(tszBuffer, shortStringLen + 1);
+			if (_itot_s(port, tszBuffer, shortStringLen, 10) == 0)
+				SetDlgItemText(hDlg, IDC_PORT, tszBuffer);
+
+			i = (int)GetPrivateProfileInt(lpszIniSection, lpszIniKeyPin, pin, lpszIniFile);
+			if (IS_SHORT(i))
+				pin = i;
+			ZeroMemory(tszBuffer, shortStringLen + 1);
+			if (_itot_s(pin, tszBuffer, shortStringLen, 10) == 0)
+				SetDlgItemText(hDlg, IDC_PIN, tszBuffer);
+
 			SetDlgItemText(hDlg, IDC_STARTSTOP, lpszStart);
+
 			return TRUE;
 		}
 		case WM_COMMAND:
@@ -146,7 +152,8 @@ static INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 					break;
 				case IDC_STARTSTOP:
 					if (!bServerRunning) {
-						if (getSavePort(hDlg)) {
+						int ret = getSaveSettings(hDlg);
+						if (ret == 1) {
 							bServerRunning = TRUE;
 							hThread = CreateThread(NULL, 0, serverThread, NULL, 0, &dwThreadId);
 							if (hThread) {
@@ -154,10 +161,17 @@ static INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 								SendDlgItemMessage(hDlg, IDC_BANNER, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)LoadImage(hInst, MAKEINTRESOURCE(IDB_WIMOTESTARTED), IMAGE_BITMAP, 0, 0, LR_SHARED));
 								ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_HIDE);
 								ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_SHOW);
+								EnableWindow(GetDlgItem(hDlg, IDC_IPADDR), FALSE);
+								EnableWindow(GetDlgItem(hDlg, IDC_PORT), FALSE);
+								EnableWindow(GetDlgItem(hDlg, IDC_PIN), FALSE);
 							}
 							else
 								bServerRunning = FALSE;
 						}
+						else if (ret == 0)
+							MessageBox(hDlg, TEXT("Invalid inputs! Port/PIN must be in the range 0-65535."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
+						else
+							MessageBox(hDlg, TEXT("An error has occurred while saving user settings."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
 					}
 					else {
 						bServerRunning = FALSE;
@@ -167,14 +181,26 @@ static INT_PTR CALLBACK dlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 						SendDlgItemMessage(hDlg, IDC_BANNER, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)LoadImage(hInst, MAKEINTRESOURCE(IDB_WIMOTE), IMAGE_BITMAP, 0, 0, LR_SHARED));
 						ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_HIDE);
 						ShowWindow(GetDlgItem(hDlg, IDC_ABOUT), SW_SHOW);
+						EnableWindow(GetDlgItem(hDlg, IDC_IPADDR), TRUE);
+						EnableWindow(GetDlgItem(hDlg, IDC_PORT), TRUE);
+						EnableWindow(GetDlgItem(hDlg, IDC_PIN), TRUE);
 					}
 					break;
 				case IDCANCEL:
+				{
 					bServerRunning = FALSE;
 					CloseHandle(hThread);
-					getSavePort(hDlg);
-					EndDialog(hDlg, TRUE);
+					int ret = getSaveSettings(hDlg);
+					if (ret == 1)
+						EndDialog(hDlg, TRUE);
+					else if (ret == 0)
+						MessageBox(hDlg, TEXT("Invalid inputs! Port/PIN be in the range 0-65535."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
+					else {
+						MessageBox(hDlg, TEXT("An error has occurred while saving user settings."), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
+						EndDialog(hDlg, TRUE);
+					}
 					break;
+				}
 				default:
 					break;
 			}

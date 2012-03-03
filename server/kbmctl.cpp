@@ -4,14 +4,21 @@
 #include <string.h>
 #include <windows.h>
 #include <vector>
+#include "resource.h"
 using namespace std;
 
 static const char *szDelim = " ";
+static const int failedAttemptsThreshold = 10;
 
 static void WINAPI mouseClick(DWORD dwAction);
 static void WINAPI moveMouse(const char *szCoords, BOOL bAbsolute);
 static void WINAPI turnMouseWheel(const char *szAmount, DWORD dwDirection);
 static void WINAPI processKeyStream(const char *szKeyStream, BOOL bKeyUp);
+
+static int failedAttempts = 0;
+
+extern HWND hDlgMain;
+extern int pin;
 
 // The processStream() function takes in a string received from the client
 // (the Android device) and parses it. This string should be in one of the
@@ -63,6 +70,13 @@ static void WINAPI processKeyStream(const char *szKeyStream, BOOL bKeyUp);
 
 void WINAPI processStream(const char *szStream)
 {
+	if (failedAttempts >= failedAttemptsThreshold) {
+		SendMessage(hDlgMain, WM_COMMAND, (WPARAM)MAKEWPARAM(IDC_STARTSTOP, 0), (LPARAM)0);
+		MessageBox(hDlgMain, TEXT("Wi-Mote Server has detected an excessive number of attempts to gain unauthorized control of your computer. For your safety, Wi-Mote Server has automatically stopped.\n\nAs a precaution, we recommend that you change your IP address and/or port number.\n\nIf you believe you are receiving this message in error, please ensure that both the Wi-Mote Server and Android client are configured to use the same PIN."), TEXT("Wi-Mote Warning"), MB_OK | MB_ICONEXCLAMATION);
+		failedAttempts = 0;
+		return;
+	}
+
 	if (!szStream)
 		return;
 
@@ -72,16 +86,28 @@ void WINAPI processStream(const char *szStream)
 		return;
 
 	// Find the first token in the stream, delimited by ' '. The first token
-	// specifies is one of the actions listed above.
+	// is the PIN.
 	char *szNext = NULL;
-	char *szAction = strtok_s(szStreamDup, szDelim, &szNext);
+	char *szPin = strtok_s(szStreamDup, szDelim, &szNext);
+	if (!szPin) {
+		free(szStreamDup);
+		return;
+	}
+	if (atoi(szPin) != pin) {
+		failedAttempts++;
+		return;
+	}
+
+	// Find the second token in the stream, which specifies one of the actions
+	// listed above.
+	char *szAction = strtok_s(NULL, szDelim, &szNext);
 	if (!szAction) {
 		free(szStreamDup);
 		return;
 	}
 
 	// The rest of the string are the parameters for the action.
-	char *szParams = (char *)szStream + strlen(szAction);
+	char *szParams = (char *)szStream + (strlen(szPin) + 1) + (strlen(szAction) + 1);
 
 	if (!strcmp(szAction, "KEY_DOWN"))
 		processKeyStream(szParams, FALSE);

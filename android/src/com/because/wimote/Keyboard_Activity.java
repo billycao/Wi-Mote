@@ -10,8 +10,8 @@ import android.widget.ToggleButton;
 public class Keyboard_Activity extends Activity {
 	private WiMoteUtil util;
 
-	private static final int KEYCODE_CAPS_LOCK = 115;
-	private static final int KEYCODE_ESCAPE = 111;
+	private final int KEYCODE_CAPS_LOCK = 115;
+	private final int KEYCODE_ESCAPE = 111;
 
 	private OnClickListener modifierClickListener = new OnClickListener() {
 		public void onClick(View v) {

@@ -14,10 +14,10 @@ import android.widget.ToggleButton;
 
 public class Keyboard_LinearLayout extends LinearLayout {
 
-	private static Activity activity;
+	private Activity activity;
 	private WiMoteUtil util;
 
-	private static HashMap<Integer, Point> pointers = new HashMap<Integer, Point>();
+	private HashMap<Integer, Point> pointers = new HashMap<Integer, Point>();
 
 	public Keyboard_LinearLayout(Context context) {
 		super(context);
