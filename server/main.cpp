@@ -76,6 +76,7 @@ static INT_PTR CALLBACK aboutDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 {
 	switch (uMsg) {
 		case WM_INITDIALOG:
+			AnimateWindow(hDlg, 500, AW_CENTER);
 			return TRUE;
 		case WM_COMMAND:
 			switch (LOWORD(wParam)) {

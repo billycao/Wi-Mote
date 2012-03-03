@@ -17,7 +17,8 @@ New updates:
 
   The PIN must be in the range 0-65536.
 
-  On the Android side, the PIN is currently hardcoded to be 1337.
+  On the Android side, the WiMoteUtil class has been updated to transmit PIN.
+  However, the PIN is currently hardcoded to be 1337.
   TODO: Add Android UI preferences for PIN.
 
 -------------------------------------------------------------------------------
