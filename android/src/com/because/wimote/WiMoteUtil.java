@@ -20,6 +20,7 @@ public class WiMoteUtil {
 	private Activity activity;
 	private ArrayList<String> depressedKeyStreams = new ArrayList<String>();
 
+	public static final int[] ACCEL_KEY_IDS = {R.id.LeftClick, R.id.RightClick};
 	public static final int[] KEY_IDS = {R.id.A, R.id.Apostrophe, R.id.B, R.id.Backslash, R.id.Backspace, R.id.C, R.id.CapsLock, R.id.Comma, R.id.D, R.id.Dash, R.id.Down, R.id.E, R.id.Eight, R.id.Enter, R.id.Equals, R.id.Esc, R.id.F, R.id.Five, R.id.Four, R.id.G, R.id.Grave, R.id.H, R.id.I, R.id.J, R.id.K, R.id.L, R.id.Left, R.id.LeftClick, R.id.LeftSquareBracket, R.id.M, R.id.N, R.id.Nine, R.id.O, R.id.One, R.id.P, R.id.Period, R.id.Q, R.id.R, R.id.Right, R.id.RightClick, R.id.RightSquareBracket, R.id.S, R.id.Semicolon, R.id.Seven, R.id.Six, R.id.Slash, R.id.Space, R.id.T, R.id.Tab, R.id.Three, R.id.Two, R.id.U, R.id.Up, R.id.V, R.id.W, R.id.X, R.id.Y, R.id.Z, R.id.Zero};
 	public static final String[] KEY_NAMES = {"a", "'", "b", "\\", "BACKSPACE", "c", "CAPS", ",", "d", "-", "DOWN", "e", "8", "ENTER", "=", "ESC", "f", "5", "4", "g", "`", "h", "i", "j", "k", "l", "LEFT", "MOUSE_LEFT_CLICK", "[", "m", "n", "9", "o", "1", "p", ".", "q", "r", "RIGHT", "MOUSE_RIGHT_CLICK", "]", "s", ";", "7", "6", "/", "SPACE", "t", "TAB", "3", "2", "u", "UP", "v", "w", "x", "y", "z", "0"};
 	public static final int[] MODIFIER_KEY_IDS = {R.id.Alt, R.id.Ctrl, R.id.Shift, R.id.Win};
@@ -60,11 +61,11 @@ public class WiMoteUtil {
 		activity = a;
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(activity);
 		hostname = settings.getString("hostname", "192.168.1.101");
-		pin = 1337;		// TODO: PIN hardcoded for now!
-		port = 27015;	// TODO: Port number hardcoded for now!
+		pin = Integer.parseInt(settings.getString("pinnumber", "1337"));	
+		port = Integer.parseInt(settings.getString("portnumber", "27015"));	
 	}
 
-	public void processKeys(String szKeyAction, String szKeyName) {
+	public void processKeys(String szKeyAction, String szKeyName, boolean isKeyboard) {
 		if (szKeyAction.isEmpty() || szKeyName.isEmpty())
 			return;
 
@@ -77,15 +78,17 @@ public class WiMoteUtil {
 		// that case, modifier keys can be pressed individually just like any
 		// other key, which is useful in certain applications such as games.
 		String szModifierKeys = new String();
-		if (((ToggleButton)activity.findViewById(R.id.ToggleModifiers)).isChecked()) {
-			if (((ToggleButton)activity.findViewById(R.id.Shift)).isChecked())
-				szModifierKeys += (getModifierKeyName(R.id.Shift) + " ");
-			if (((ToggleButton)activity.findViewById(R.id.Ctrl)).isChecked())
-				szModifierKeys += (getModifierKeyName(R.id.Ctrl) + " ");
-			if (((ToggleButton)activity.findViewById(R.id.Win)).isChecked())
-				szModifierKeys += (getModifierKeyName(R.id.Win) + " ");
-			if (((ToggleButton)activity.findViewById(R.id.Alt)).isChecked())
-				szModifierKeys += (getModifierKeyName(R.id.Alt) + " ");
+		if(isKeyboard) {
+			if (((ToggleButton)activity.findViewById(R.id.ToggleModifiers)).isChecked()) {
+				if (((ToggleButton)activity.findViewById(R.id.Shift)).isChecked())
+					szModifierKeys += (getModifierKeyName(R.id.Shift) + " ");
+				if (((ToggleButton)activity.findViewById(R.id.Ctrl)).isChecked())
+					szModifierKeys += (getModifierKeyName(R.id.Ctrl) + " ");
+				if (((ToggleButton)activity.findViewById(R.id.Win)).isChecked())
+					szModifierKeys += (getModifierKeyName(R.id.Win) + " ");
+				if (((ToggleButton)activity.findViewById(R.id.Alt)).isChecked())
+					szModifierKeys += (getModifierKeyName(R.id.Alt) + " ");
+			}
 		}
 
 		String szKeyStream = szModifierKeys + szKeyName;

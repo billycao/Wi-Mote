@@ -3,7 +3,7 @@
     <PreferenceCategory 
         android:title="Trackpad Settings">
           <com.because.wimote.SeekBarPreference
-                android:key="aMouseSensitivity"
+                android:key="tMouseSensitivity"
                 android:name="Mouse Sensitivity"
                 android:defaultValue="32" 
                 android:title="Touch Mouse Sensitivity"/>

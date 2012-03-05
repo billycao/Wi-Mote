@@ -9,5 +9,21 @@
             android:summary="The IP address of the host PC (eg. 192.168.1.101)"
             android:defaultValue="192.168.1.101"
             android:key="hostname" />
-    </PreferenceCategory>
+    
+    
+     <EditTextPreference 
+            android:title="@string/prefs_hostport"
+            android:name="Server Port"
+            android:summary="The port number of host PC (range: 0-65535)"
+            android:defaultValue="27015"
+            android:key="portnumber" />
+            
+      <EditTextPreference 
+            android:title="@string/prefs_hostpin"
+            android:name="Server Pin"
+            android:summary="The pin number used on host PC (must match host) (range: 0-65535)"
+            android:defaultValue="1337"
+            android:key="pinnumber" />
+            
+     </PreferenceCategory>
 </PreferenceScreen>

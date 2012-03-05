@@ -78,7 +78,7 @@ public class Keyboard_Activity extends Activity {
 				szKeyName = Character.toString((char)character);
 				break;
 		}
-		util.processKeys(szKeyAction, szKeyName);
+		util.processKeys(szKeyAction, szKeyName, true);
 	}
 
 	// These are for built-in Android soft keyboard or physical keyboard.

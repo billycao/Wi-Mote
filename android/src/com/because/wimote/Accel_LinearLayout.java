@@ -10,22 +10,22 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ToggleButton;
+//import android.widget.ToggleButton;
 
-public class Keyboard_LinearLayout extends LinearLayout {
+public class Accel_LinearLayout extends LinearLayout {
 
 	private Activity activity;
 	private WiMoteUtil util;
 
 	private HashMap<Integer, Point> pointers = new HashMap<Integer, Point>();
 
-	public Keyboard_LinearLayout(Context context) {
+	public Accel_LinearLayout(Context context) {
 		super(context);
 		activity = (Activity)context;
 		util = new WiMoteUtil(activity);
 	}
 
-	public Keyboard_LinearLayout(Context context, AttributeSet attrs) {
+	public Accel_LinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		activity = (Activity)context;
 		util = new WiMoteUtil(activity);
@@ -33,7 +33,7 @@ public class Keyboard_LinearLayout extends LinearLayout {
 
 	private Rect getViewRect(View view) {
 		Rect rectParent = new Rect();
-		((Keyboard_LinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
+		//((Accel_LinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
 
 		Rect rect = new Rect();
 		view.getGlobalVisibleRect(rect);
@@ -51,31 +51,18 @@ public class Keyboard_LinearLayout extends LinearLayout {
 
 		String keyAction = bPressed ? WiMoteUtil.KEY_DOWN : WiMoteUtil.KEY_UP;
 
-		if (!((ToggleButton)activity.findViewById(R.id.ToggleModifiers)).isChecked()) {
-			// Allow multitouch of modifier keys only when they are not acting
-			// as toggle buttons.
-			for (int i = 0; i < WiMoteUtil.MODIFIER_KEY_IDS.length; i++) {
-				if (getViewRect(activity.findViewById(WiMoteUtil.MODIFIER_KEY_IDS[i])).contains(point.x, point.y)) {
-					activity.findViewById(WiMoteUtil.MODIFIER_KEY_IDS[i]).setPressed(bPressed);
-					util.processKeys(keyAction, WiMoteUtil.getModifierKeyName(WiMoteUtil.MODIFIER_KEY_IDS[i]), true);
-					if (bPressed)
-						pointers.put(event.getPointerId(pointerIndex), point);
-					else
-						pointers.remove(pointerId);
-				}
-			}
-		}
-
-		for (int i = 0; i < WiMoteUtil.KEY_IDS.length; i++) {
-			if (getViewRect(activity.findViewById(WiMoteUtil.KEY_IDS[i])).contains(point.x, point.y)) {
-				activity.findViewById(WiMoteUtil.KEY_IDS[i]).setPressed(bPressed);
-				util.processKeys(keyAction, WiMoteUtil.getKeyName(WiMoteUtil.KEY_IDS[i]), true);
+		
+		for (int i = 0; i < WiMoteUtil.ACCEL_KEY_IDS.length; i++) {
+			if (getViewRect(activity.findViewById(WiMoteUtil.ACCEL_KEY_IDS[i])).contains(point.x, point.y)) {
+				activity.findViewById(WiMoteUtil.ACCEL_KEY_IDS[i]).setPressed(bPressed);
+				util.processKeys(keyAction, WiMoteUtil.getKeyName(WiMoteUtil.ACCEL_KEY_IDS[i]), false);
 				if (bPressed)
 					pointers.put(event.getPointerId(pointerIndex), point);
 				else
 					pointers.remove(pointerId);
 			}
 		}
+		
 	}
 
 	@Override

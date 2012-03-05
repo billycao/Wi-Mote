@@ -3,10 +3,9 @@ package com.because.wimote;
  *Saqib's Accelerometer test
  */
 
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
+//import android.view.View.OnTouchListener;
 
 import android.content.SharedPreferences;  
 
@@ -27,7 +26,7 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 
 
-public class Accel_Activity extends Activity implements OnClickListener  {
+public class Accel_Activity extends Activity  implements OnClickListener  {
 	private WiMoteUtil util;
 	
 	private SensorManager mSensorManager;
@@ -52,22 +51,22 @@ public class Accel_Activity extends Activity implements OnClickListener  {
 
 //	private static final String hostname = "192.168.0.6";
 	//private static final int port = 27015;
-	
+	/*
 	private OnTouchListener buttonListener = new OnTouchListener() {
 
 		public boolean onTouch(View button, MotionEvent event) {
 			
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				if (button.getId() == R.id.Accel_Mouse_left)
+				if (button.getId() == R.id.LeftClick)
 					util.sendString("MOUSE_LEFT_DOWN");
-				else if (button.getId() == R.id.Accel_Mouse_Right)
+				else if (button.getId() == R.id.RightClick)
 					util.sendString("MOUSE_RIGHT_DOWN");
 				break;
 			case MotionEvent.ACTION_UP:
-				if (button.getId() == R.id.Accel_Mouse_left)
+				if (button.getId() == R.id.LeftClick)
 					util.sendString("MOUSE_LEFT_UP");
-				else if (button.getId() == R.id.Accel_Mouse_Right)
+				else if (button.getId() == R.id.RightClick)
 					util.sendString("MOUSE_RIGHT_UP");
 				break;
 			default:
@@ -77,6 +76,7 @@ public class Accel_Activity extends Activity implements OnClickListener  {
 			return false;
 		}
 	};
+	*/
 	
     /** Called when the activity is first created. */
     
@@ -97,11 +97,12 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     	
         //testing output TODO: remove test
        
-      //  mTextView1 = (TextView)findViewById(R.id.Accel_textView1);
-       // mTextView2 = (TextView)findViewById(R.id.Accel_textView2);
+        //mTextView1 = (TextView)findViewById(R.id.Accel_textView1);
+        //TextView2 = (TextView)findViewById(R.id.Accel_textView2);
         
         mSensitivity = (TextView) findViewById(R.id.Accel_sens_text);
         mThreshold = (TextView) findViewById(R.id.Accel_thres_text);
+        
         
         Button buttonSensUp = (Button) findViewById(R.id.Accel_sens_button_up);
         buttonSensUp.setOnClickListener(this);
@@ -112,8 +113,8 @@ public class Accel_Activity extends Activity implements OnClickListener  {
         Button buttonThresDn = (Button) findViewById(R.id.Accel_thres_button_down);
         buttonThresDn.setOnClickListener(this);
         
-        ((Button)findViewById(R.id.Accel_Mouse_left)).setOnTouchListener(buttonListener);
-        ((Button)findViewById(R.id.Accel_Mouse_Right)).setOnTouchListener(buttonListener);
+        //((Button)findViewById(R.id.LeftClick)).setOnTouchListener(buttonListener);
+        //((Button)findViewById(R.id.RightClick)).setOnTouchListener(buttonListener);
 
         toggleRun = (ToggleButton)findViewById(R.id.Accel_toggleButton1);
         toggleRun.setChecked(true);

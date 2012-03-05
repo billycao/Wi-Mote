@@ -12,7 +12,9 @@
     
     <string name="prefs_name">Settings</string>
     <string name="prefs_hostip">Server IP</string>
-    
+    <string name="prefs_hostport">Server Port</string>
+    <string name="prefs_hostpin">Server Pin</string>
+        
     <string name="keyboard_name">Keyboard</string>
     
     <string name="accel_name">Accelerometer</string>
