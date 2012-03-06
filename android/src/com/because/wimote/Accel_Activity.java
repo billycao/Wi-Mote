@@ -152,62 +152,16 @@ public class Accel_Activity extends Activity  implements OnClickListener  {
 	}
 	//+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
 	
-    private void ProcessData(float x, float y, float z)
-    {
-    	//float Accel_Sensitivity_Max = (float) 4; 
-    	//float AccelMaximum = (float) 10;
-    	//float DetectionThreshold = (float) 2;
-    
-    	//under normal operation of the accelerometer the tilting of the phone to a 90* angle will 
-    	//correspond with values in the range of 0->10, however if the phone is shaken or moved quickly
-    	//the value may exceed 10, so the .min function will limit the value to 10, this is then scaled 
-    	//up to 30, representing 30% of the screen traveled in a unit of time (TBD)
-    	try {
-			Thread.sleep(0, 10000);
-		} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	//TODO: set once in beginning.
-    	float PerS = Accel_Sensitivity_Max*((float)MouseSensitivityPercent)/100;
-    	
-    	//TODO: can we reduce multiplications
-    	//Scale and limit the Accelerometer data to a range between 0->30 (representing percent value for mouse movement)
-    	PercentX = Math.min(x, AccelMaximum)*PerS;
-    	PercentY = Math.min(y, AccelMaximum)*PerS;
-    	//PercentZ = Math.min(z, AccelMaximum)*Accel_Sensitivity_Max;
-    
-    	PercentX = Math.max(PercentX, -AccelMaximum)*PerS;
-    	PercentY = Math.max(PercentY, -AccelMaximum)*PerS;
-    	//PercentZ = -Math.max(z, -AccelMaximum)*Accel_Sensitivity_Max;
+    private void ProcessData(float x, float y, float z) {
+    	float[] delta = new float[2];
+    	delta = util.processAccel(x, y, z);
 
-    		
-    	
-    	
-    	//to ignore noise while holding the phone still.
-    	if(Math.abs(PercentX) < DetectionThreshold)
-    		PercentX = 0;
-    	else // the threshold is subtracted (or added) to the Percent value to scale it back for the threshold
-    		PercentX = PercentX - DetectionThreshold*(PercentX/Math.abs(PercentX));
-    	
-    	if(Math.abs(PercentY) < DetectionThreshold)
-    		PercentY = 0;
-    	else
-    		PercentY = PercentY - DetectionThreshold*(PercentY/Math.abs(PercentY));
-    	
-    	if(Math.abs(PercentZ) < DetectionThreshold)
-    		PercentZ = 0;
-    	else
-    		PercentZ = PercentZ - DetectionThreshold*(PercentZ/Math.abs(PercentZ));
-    	
-    	
     	//---------------Pass Accelerometer data to Network Function------------------ 	
     	//int RoundX =  -Math.round(PercentX);
     	//int RoundY =  Math.round(PercentY);
  
     //	szAccelPercent = Integer.toString(RoundX, 10) + " " + Integer.toString(RoundY, 10);
-    	szAccelPercent = Float.toString(-PercentX) + " " + Float.toString(PercentY);
+    	szAccelPercent = Float.toString(delta[0]) + " " + Float.toString(delta[1]);
     	
     //	mTextView2.setText("ACCEL " + szAccelPercent);  // test output
     	if(toggleRun.isChecked())
@@ -228,7 +182,14 @@ public class Accel_Activity extends Activity  implements OnClickListener  {
     	mThreshold.setText("" + Math.rint(10*DetectionThreshold)/10);
     	
 	    //=============================== display data on display==================
-    }
+
+    	try {
+    		Thread.sleep(0, 10000);
+    	} catch (InterruptedException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+		}
+	}
     
     private final SensorEventListener mySensorListener = new SensorEventListener() {
     	public void onSensorChanged(SensorEvent event) {

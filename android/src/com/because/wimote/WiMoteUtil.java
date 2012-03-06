@@ -20,6 +20,11 @@ public class WiMoteUtil {
 	private Activity activity;
 	private ArrayList<String> depressedKeyStreams = new ArrayList<String>();
 
+	private float Accel_Sensitivity_Max = 10f;
+	private float AccelMaximum = 10f;
+	private float DetectionThreshold = 2f;
+	private int MouseSensitivityPercent = 50;
+
 	public static final int[] ACCEL_KEY_IDS = {R.id.LeftClick, R.id.RightClick};
 	public static final int[] KEY_IDS = {R.id.A, R.id.Apostrophe, R.id.B, R.id.Backslash, R.id.Backspace, R.id.C, R.id.CapsLock, R.id.Comma, R.id.D, R.id.Dash, R.id.Down, R.id.E, R.id.Eight, R.id.Enter, R.id.Equals, R.id.Esc, R.id.F, R.id.Five, R.id.Four, R.id.G, R.id.Grave, R.id.H, R.id.I, R.id.J, R.id.K, R.id.L, R.id.Left, R.id.LeftClick, R.id.LeftSquareBracket, R.id.M, R.id.N, R.id.Nine, R.id.O, R.id.One, R.id.P, R.id.Period, R.id.Q, R.id.R, R.id.Right, R.id.RightClick, R.id.RightSquareBracket, R.id.S, R.id.Semicolon, R.id.Seven, R.id.Six, R.id.Slash, R.id.Space, R.id.T, R.id.Tab, R.id.Three, R.id.Two, R.id.U, R.id.Up, R.id.V, R.id.W, R.id.X, R.id.Y, R.id.Z, R.id.Zero};
 	public static final String[] KEY_NAMES = {"a", "'", "b", "\\", "BACKSPACE", "c", "CAPS", ",", "d", "-", "DOWN", "e", "8", "ENTER", "=", "ESC", "f", "5", "4", "g", "`", "h", "i", "j", "k", "l", "LEFT", "MOUSE_LEFT_CLICK", "[", "m", "n", "9", "o", "1", "p", ".", "q", "r", "RIGHT", "MOUSE_RIGHT_CLICK", "]", "s", ";", "7", "6", "/", "SPACE", "t", "TAB", "3", "2", "u", "UP", "v", "w", "x", "y", "z", "0"};
@@ -61,8 +66,10 @@ public class WiMoteUtil {
 		activity = a;
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(activity);
 		hostname = settings.getString("hostname", "192.168.1.101");
-		pin = Integer.parseInt(settings.getString("pinnumber", "1337"));	
+		pin = Integer.parseInt(settings.getString("pinnumber", "1337"));
 		port = Integer.parseInt(settings.getString("portnumber", "27015"));	
+		DetectionThreshold = Float.parseFloat(settings.getString("aThreshold", "2f"));
+		MouseSensitivityPercent = settings.getInt("aMouseSensitivity", 50);
 	}
 
 	public void processKeys(String szKeyAction, String szKeyName, boolean isKeyboard) {
@@ -112,5 +119,45 @@ public class WiMoteUtil {
 				depressedKeyStreams.remove(szKeyStream);
 			}
 		}
+	}
+
+	public float[] processAccel(float x, float y, float z) {
+		float PercentX = 0f, PercentY = 0f, PercentZ = 0f;
+
+		//under normal operation of the accelerometer the tilting of the phone to a 90* angle will
+		//correspond with values in the range of 0->10, however if the phone is shaken or moved quickly
+		//the value may exceed 10, so the .min function will limit the value to 10, this is then scaled
+		//up to 30, representing 30% of the screen traveled in a unit of time (TBD)
+
+		//TODO: set once in beginning.
+		float PerS = Accel_Sensitivity_Max * (float)MouseSensitivityPercent / 100f;
+
+		//TODO: can we reduce multiplications
+		//Scale and limit the Accelerometer data to a range between 0->30 (representing percent value for mouse movement)
+		PercentX = Math.min(x, AccelMaximum) * PerS;
+		PercentY = Math.min(y, AccelMaximum) * PerS;
+		//PercentZ = Math.min(z, AccelMaximum)*Accel_Sensitivity_Max;
+
+		PercentX = Math.max(PercentX, -AccelMaximum) * PerS;
+		PercentY = Math.max(PercentY, -AccelMaximum) * PerS;
+		//PercentZ = -Math.max(z, -AccelMaximum)*Accel_Sensitivity_Max;
+
+		//to ignore noise while holding the phone still.
+		if (Math.abs(PercentX) < DetectionThreshold)
+			PercentX = 0;
+		else // the threshold is subtracted (or added) to the Percent value to scale it back for the threshold
+			PercentX = PercentX - DetectionThreshold * (PercentX / Math.abs(PercentX));
+
+		if (Math.abs(PercentY) < DetectionThreshold)
+			PercentY = 0;
+		else
+			PercentY = PercentY - DetectionThreshold * (PercentY / Math.abs(PercentY));
+
+		if (Math.abs(PercentZ) < DetectionThreshold)
+			PercentZ = 0;
+		else
+			PercentZ = PercentZ - DetectionThreshold * (PercentZ / Math.abs(PercentZ));
+
+		return (new float[] {-PercentX, PercentY});
 	}
 }
