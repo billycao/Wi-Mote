@@ -43,9 +43,10 @@ public class WiMoteUtil {
 
 	public void sendString(String string) {
 		try {
-			DatagramSocket socket = new DatagramSocket();
 			byte[] data = string.getBytes();
-			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostname), port);
+			DatagramSocket socket = new DatagramSocket();
+			socket.connect(InetAddress.getByName(hostname), port);
+			DatagramPacket packet = new DatagramPacket(data, data.length);
 			socket.send(packet);
 			socket.close();
 		} catch (Exception e) {

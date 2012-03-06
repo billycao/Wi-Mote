@@ -50,8 +50,6 @@ public class Accel_Activity extends Activity implements OnClickListener  {
     //for server________________________________________
     String szAccelPercent = new String();
 
-//	private static final String hostname = "192.168.0.6";
-	//private static final int port = 27015;
 	
 	private OnTouchListener buttonListener = new OnTouchListener() {
 
