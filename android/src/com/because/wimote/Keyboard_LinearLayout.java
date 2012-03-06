@@ -14,10 +14,10 @@ import android.widget.ToggleButton;
 
 public class Keyboard_LinearLayout extends LinearLayout {
 
-	private static Activity activity;
+	private Activity activity;
 	private WiMoteUtil util;
 
-	private static HashMap<Integer, Point> pointers = new HashMap<Integer, Point>();
+	private HashMap<Integer, Point> pointers = new HashMap<Integer, Point>();
 
 	public Keyboard_LinearLayout(Context context) {
 		super(context);
@@ -57,7 +57,7 @@ public class Keyboard_LinearLayout extends LinearLayout {
 			for (int i = 0; i < WiMoteUtil.MODIFIER_KEY_IDS.length; i++) {
 				if (getViewRect(activity.findViewById(WiMoteUtil.MODIFIER_KEY_IDS[i])).contains(point.x, point.y)) {
 					activity.findViewById(WiMoteUtil.MODIFIER_KEY_IDS[i]).setPressed(bPressed);
-					util.processKeys(keyAction, WiMoteUtil.getModifierKeyName(WiMoteUtil.MODIFIER_KEY_IDS[i]));
+					util.processKeys(keyAction, WiMoteUtil.getModifierKeyName(WiMoteUtil.MODIFIER_KEY_IDS[i]), true);
 					if (bPressed)
 						pointers.put(event.getPointerId(pointerIndex), point);
 					else
@@ -69,7 +69,7 @@ public class Keyboard_LinearLayout extends LinearLayout {
 		for (int i = 0; i < WiMoteUtil.KEY_IDS.length; i++) {
 			if (getViewRect(activity.findViewById(WiMoteUtil.KEY_IDS[i])).contains(point.x, point.y)) {
 				activity.findViewById(WiMoteUtil.KEY_IDS[i]).setPressed(bPressed);
-				util.processKeys(keyAction, WiMoteUtil.getKeyName(WiMoteUtil.KEY_IDS[i]));
+				util.processKeys(keyAction, WiMoteUtil.getKeyName(WiMoteUtil.KEY_IDS[i]), true);
 				if (bPressed)
 					pointers.put(event.getPointerId(pointerIndex), point);
 				else

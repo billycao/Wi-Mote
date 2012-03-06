@@ -121,7 +121,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		editPref = settings.edit();
 		
 		//track_Sensitivity = (float) Float.parseFloat(settings.getString("aTrack_Sensitivity", "1.5f"));
-		MouseSensitivityPercent = settings.getInt("aMouseSensitivity", 50);
+		MouseSensitivityPercent = settings.getInt("tMouseSensitivity", 50);
 		track_Sensitivity = trackSensitivityMax * ((float)MouseSensitivityPercent/100);
 		
 		// set text
