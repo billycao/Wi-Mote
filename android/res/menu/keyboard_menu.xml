@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_keyboard_accel" android:title="@string/keyboard_menu_accel"></item>
+    <item android:id="@+id/menu_keyboard_soft" android:title="@string/keyboard_menu_soft"></item>
+    
+
+</menu>

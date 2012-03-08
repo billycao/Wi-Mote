@@ -1,17 +1,32 @@
 package com.because.wimote;
 
+import java.util.List;
+
 import android.app.Activity;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ToggleButton;
 
 public class Keyboard_Activity extends Activity {
-	private WiMoteUtil util;
-
 	private final int KEYCODE_CAPS_LOCK = 115;
 	private final int KEYCODE_ESCAPE = 111;
+
+	private boolean bAccel = false;
+	private List<Sensor> sensors;
+	private Sensor mAccelerometer;
+	private SensorManager mSensorManager;
+	private WiMoteUtil util;
 
 	private OnClickListener modifierClickListener = new OnClickListener() {
 		public void onClick(View v) {
@@ -22,6 +37,23 @@ public class Keyboard_Activity extends Activity {
 				((ToggleButton)findViewById(R.id.Alt)).setChecked(false);
 			}
 		}
+	};
+
+	private final SensorEventListener mySensorListener = new SensorEventListener() {
+		public void onSensorChanged(SensorEvent event) {
+			if (bAccel) {
+				float[] delta = new float[2];
+				delta = util.processAccel(-event.values[1], event.values[0], event.values[2]);
+				util.sendString("MOUSE_DELTA " + Float.toString(delta[0]) + " " + Float.toString(delta[1]));
+				try {
+					Thread.sleep(0, 10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 	};
 
 	/** Called when the activity is first created. */
@@ -37,6 +69,47 @@ public class Keyboard_Activity extends Activity {
 		((ToggleButton)findViewById(R.id.ToggleModifiers)).setChecked(true);
 
 		util = new WiMoteUtil(this);
+
+		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+		sensors = mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		if (sensors.size() > 0)
+			mAccelerometer = sensors.get(0);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.keyboard_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_keyboard_accel:
+				bAccel = !bAccel;
+				return true;
+			case R.id.menu_keyboard_soft:
+				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+				if (imm != null)
+					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onResume(){
+		super.onResume();
+		mSensorManager.registerListener(mySensorListener, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+	}
+
+	@Override
+	protected void onStop(){
+		mSensorManager.unregisterListener(mySensorListener);
+		super.onStop();
 	}
 
 	private void processKeys(String szKeyAction, int keyCode, int character) {
