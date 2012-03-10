@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.because.wimote.KeyboardGaming_LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/Parent"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical" >
+
+  <LinearLayout
+		android:id="@+id/GamingKeyboardRow1"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" >
+
+    <Button
+			android:focusable="false"
+			android:id="@+id/Esc"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="Esc" />
+
+    <Button
+			android:focusable="false"
+			android:id="@+id/Left"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="←" />
+
+    <Button
+			android:id="@+id/Up"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="↑" />
+
+    <Button
+			android:focusable="false"
+			android:id="@+id/Down"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="↓" />
+
+    <Button
+			android:focusable="false"
+			android:id="@+id/Right"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="→" />
+
+    <Button
+			android:focusable="false"
+			android:id="@+id/Enter"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="Enter" />
+
+  </LinearLayout>
+
+  <LinearLayout
+		android:id="@+id/GamingKeyboardRow2"
+		android:layout_width="match_parent"
+		android:layout_height="75dp" >
+
+    <Button
+			android:id="@+id/Tab"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="Tab" />
+
+    <Button
+			android:id="@+id/W"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="↑\nW" />
+
+    <Button
+			android:id="@+id/E"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="E" />
+
+    <Button
+			android:id="@+id/R"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="R" />
+
+    <Button
+			android:id="@+id/LeftClick"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="Left Click" />
+
+    <Button
+			android:id="@+id/RightClick"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="Right Click" />
+
+  </LinearLayout>
+
+  <LinearLayout
+		android:id="@+id/GamingKeyboardRow3"
+		android:layout_width="match_parent"
+		android:layout_height="75dp" >
+
+    <Button
+			android:id="@+id/A"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="← A" />
+
+    <Button
+			android:id="@+id/S"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="S\n↓" />
+
+    <Button
+			android:id="@+id/D"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="D →" />
+
+    <Button
+			android:id="@+id/F"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="F" />
+
+    <Button
+			android:id="@+id/G"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="G" />
+
+    <Button
+			android:id="@+id/Z"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="Z" />
+
+  </LinearLayout>
+
+  <LinearLayout
+		android:id="@+id/GamingKeyboardRow4"
+		android:layout_width="match_parent"
+		android:layout_height="75dp" >
+
+    <Button
+			android:id="@+id/Ctrl"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="Ctrl" />
+
+    <Button
+			android:focusable="false"
+			android:id="@+id/Space"
+			android:layout_width="0px"
+			android:layout_height="match_parent"
+			android:layout_weight="4"
+			android:text="" />
+
+    <Button
+			android:id="@+id/Alt"
+			android:layout_width="0px"
+			android:layout_height="50dp"
+			android:layout_weight="1"
+			android:focusable="false"
+			android:text="Alt" />
+
+  </LinearLayout>
+
+</com.because.wimote.KeyboardGaming_LinearLayout>

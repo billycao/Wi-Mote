@@ -2,7 +2,7 @@
 <resources>
 
     
-    <string name="app_name">WiMote</string>
+    <string name="app_name">Wi-Mote</string>
     <string name="main_title">Master Control Activity</string>
     
     <string name="main_accel">Accelerometer Mode</string>
@@ -15,7 +15,7 @@
     <string name="prefs_hostport">Server Port</string>
     <string name="prefs_hostpin">Server Pin</string>
         
-    <string name="keyboard_menu_accel">Toggle Accelerometer Mouse</string><string name="keyboard_menu_soft">Open Android Soft Keyboard</string><string name="keyboard_name">Keyboard</string>
+    <string name="keyboard_menu_accel">Toggle Accelerometer Mouse</string><string name="keyboard_menu_soft">Toggle Android Soft Keyboard</string><string name="keyboard_menu_gaming">Toggle Gaming Mode</string><string name="keyboard_name">Keyboard</string>
     
     <string name="accel_name">Accelerometer</string>
     <string name="because">&#8230; because!</string>
@@ -25,6 +25,7 @@
     <string name="prefs_accel_sensitivity">Mouse Sensitivity</string>
      <string name="prefs_track_sensitivity">Trackpad Sensitivity</string>
     <string name="trackpad_image_desc">A simple overlay to interface with touch input</string>
+    
     
     
 

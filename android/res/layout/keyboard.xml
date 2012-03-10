@@ -6,7 +6,7 @@
 	android:orientation="vertical" >
 
 	<LinearLayout
-		android:id="@+id/Row1"
+		android:id="@+id/KeyboardRow1"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" >
 
@@ -125,7 +125,7 @@
 	</LinearLayout>
 
 	<LinearLayout
-		android:id="@+id/Row2"
+		android:id="@+id/KeyboardRow2"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" >
 
@@ -244,7 +244,7 @@
 	</LinearLayout>
 
 	<LinearLayout
-		android:id="@+id/Row2"
+		android:id="@+id/KeyboardRow3"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" >
 
@@ -355,7 +355,7 @@
 	</LinearLayout>
 
 	<LinearLayout
-		android:id="@+id/Row4"
+		android:id="@+id/KeyboardRow4"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" >
 
@@ -467,7 +467,7 @@
 	</LinearLayout>
 
 	<LinearLayout
-		android:id="@+id/Row5"
+		android:id="@+id/KeyboardRow5"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content" >
 

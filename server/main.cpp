@@ -1,14 +1,15 @@
 #define WIN32_LEAN_AND_MEAN
 
-#include <Windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <malloc.h>
 #include <stdlib.h>
 #include <tchar.h>
 #include <time.h>
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include "resource.h"
 
+#pragma comment(lib, "Ws2_32.lib")
 #pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #define IS_SHORT(x) (x >= 0 && x <= 65535)
@@ -29,8 +30,8 @@ static HINSTANCE hInst = NULL;
 
 BOOL bServerRunning = FALSE;
 HWND hDlgMain = NULL;
-int port = 27015;
 int pin = 0;
+int port = 27015;
 WSADATA wsaData;
 
 extern DWORD WINAPI serverThread(LPVOID lpParam);
@@ -217,7 +218,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	hInst = hInstance;
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != NO_ERROR) {
-		MessageBox(NULL, TEXT("WinSock initialzation error!"), TEXT("WiMote Error"), MB_OK | MB_ICONSTOP);
+		MessageBox(NULL, TEXT("WinSock initialization error!"), TEXT("Wi-Mote Error"), MB_OK | MB_ICONSTOP);
 		return 1;
 	}
 
