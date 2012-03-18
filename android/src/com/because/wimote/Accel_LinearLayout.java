@@ -55,7 +55,7 @@ public class Accel_LinearLayout extends LinearLayout {
 		for (int i = 0; i < WiMoteUtil.ACCEL_KEY_IDS.length; i++) {
 			if (getViewRect(activity.findViewById(WiMoteUtil.ACCEL_KEY_IDS[i])).contains(point.x, point.y)) {
 				activity.findViewById(WiMoteUtil.ACCEL_KEY_IDS[i]).setPressed(bPressed);
-				util.processKeys(keyAction, WiMoteUtil.getKeyName(WiMoteUtil.ACCEL_KEY_IDS[i]), false);
+				util.processKeys(keyAction, util.getKeyName(WiMoteUtil.ACCEL_KEY_IDS[i]), false);
 				if (bPressed)
 					pointers.put(event.getPointerId(pointerIndex), point);
 				else

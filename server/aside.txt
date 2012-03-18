@@ -1,0 +1,34 @@
+/*						size_t count = 0;
+						for (struct addrinfo *ptr = result; ptr != NULL; ptr = ptr->ai_next)
+							count++;
+						size_t len = count * 64;
+						char *szIpAddr = (char *)calloc(len + 1, sizeof(char));
+						if (szIpAddr) {
+							ZeroMemory(szIpAddr, len + 1);
+							for (struct addrinfo *ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+								switch (ptr->ai_family) {
+									case AF_INET: {
+										struct sockaddr_in *sockaddr_ipv4 = (struct sockaddr_in *)ptr->ai_addr;
+										if (sockaddr_ipv4) {
+											if (strlen(szIpAddr) > 0)
+												strcat_s(szIpAddr, len, ", ");
+											strcat_s(szIpAddr, len, inet_ntoa(sockaddr_ipv4->sin_addr));
+										}
+										break;
+									}
+									case AF_INET6: {
+										LPSOCKADDR sockaddr_ip = (LPSOCKADDR)ptr->ai_addr;
+										DWORD ipbufferlength = 46;
+										char ipstringbuffer[46];
+										if (WSAAddressToStringA(sockaddr_ip, (DWORD)ptr->ai_addrlen, NULL, ipstringbuffer, &ipbufferlength) == 0) {
+											if (strlen(szIpAddr) > 0)
+												strcat_s(szIpAddr, len, ", ");
+											strcat_s(szIpAddr, len, ipstringbuffer);
+										}
+										break;
+									}
+									default:
+										break;
+								}
+							}
+*/

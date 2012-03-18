@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menu_keyboard_accel" android:title="@string/keyboard_menu_accel"></item>
     <item android:id="@+id/menu_keyboard_soft" android:title="@string/keyboard_menu_soft"></item>
+    <item android:id="@+id/menu_keyboard_gaming" android:title="@string/keyboard_menu_gaming"></item>
     
 
 </menu>
