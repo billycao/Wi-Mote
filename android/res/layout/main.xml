@@ -9,6 +9,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center" 
         android:src="@drawable/wimote_logo"
         android:contentDescription="@string/app_name" />
@@ -18,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingTop="15dp"
+        android:textColor="#333"
         android:text="@string/because" />
     
     <LinearLayout 
