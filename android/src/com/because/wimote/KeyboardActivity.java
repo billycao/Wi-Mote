@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
-public class Keyboard_Activity extends Activity {
+public class KeyboardActivity extends Activity {
 	private final int KEYCODE_CAPS_LOCK = 115;
 	private final int KEYCODE_ESCAPE = 111;
 

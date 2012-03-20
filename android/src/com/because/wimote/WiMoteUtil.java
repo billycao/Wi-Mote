@@ -103,9 +103,9 @@ public class WiMoteUtil {
 	public Rect getViewRect(View view) {
 		Rect rectParent = new Rect();
 		if (bGaming)
-			((KeyboardGaming_LinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
+			((KeyboardGamingLinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
 		else
-			((Keyboard_LinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
+			((KeyboardLinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
 
 		Rect rect = new Rect();
 		view.getGlobalVisibleRect(rect);

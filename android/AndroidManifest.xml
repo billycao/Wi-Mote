@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name=".WiMote_Activity"
+            android:name=".WiMoteActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,23 +20,23 @@
             </intent-filter>
         </activity>
         <activity 
-            android:name=".Keyboard_Activity" 
+            android:name=".KeyboardActivity" 
             android:label="@string/keyboard_name" android:screenOrientation="landscape">
             
         </activity>
         <activity 
-            android:name=".Preference_Activity" 
+            android:name=".MyPreferenceActivity" 
             android:label="@string/prefs_name">
             
         </activity>
         <activity 
-            android:name=".Accel_Activity" 
+            android:name=".AccelActivity" 
             android:label="@string/accel_name" android:screenOrientation="portrait">
             
         </activity>
         <activity 
             android:screenOrientation="sensor"
-            android:name=".Trackpad_Activity" 
+            android:name=".TrackpadActivity" 
             android:label="@string/accel_name">
             
         </activity>

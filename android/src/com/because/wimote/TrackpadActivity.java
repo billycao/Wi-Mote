@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 //import android.widget.TextView;
 
-public class Trackpad_Activity extends Activity implements OnTouchListener{
+public class TrackpadActivity extends Activity implements OnTouchListener{
     /** Called when the activity is first created. */
 	// variables for mouse I/O
 	private float currX, currY, MAX, track_Sensitivity, trackSensitivityMax;

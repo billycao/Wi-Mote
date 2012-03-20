@@ -26,7 +26,7 @@ import android.widget.Button;
 import android.widget.ToggleButton;
 
 
-public class Accel_Activity extends Activity  implements OnClickListener  {
+public class AccelActivity extends Activity  implements OnClickListener  {
 	private WiMoteUtil util;
 	
 	private SensorManager mSensorManager;

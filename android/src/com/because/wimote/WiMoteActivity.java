@@ -9,7 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-public class WiMote_Activity extends Activity {
+public class WiMoteActivity extends Activity {
 	public static final String PREFS_NAME = "WiMotePrefsFile";
 	
     /** Called when the activity is first created. */
@@ -24,19 +24,19 @@ public class WiMote_Activity extends Activity {
     
     /** Main menu */
     public void button_startAccel(View view) {
-    	Intent intent = new Intent(view.getContext(), Accel_Activity.class);
+    	Intent intent = new Intent(view.getContext(), AccelActivity.class);
     	startActivity(intent);
     }
     public void button_startTrackpad(View view) {
-    	Intent intent = new Intent(view.getContext(), Trackpad_Activity.class);
+    	Intent intent = new Intent(view.getContext(), TrackpadActivity.class);
     	startActivity(intent);
     }
     public void button_startKeyboard(View view) {
-    	Intent intent = new Intent(view.getContext(), Keyboard_Activity.class);
+    	Intent intent = new Intent(view.getContext(), KeyboardActivity.class);
     	startActivity(intent);
     }
     public void button_startSettings(View view) {
-		Intent intent = new Intent(view.getContext(), Preference_Activity.class);
+		Intent intent = new Intent(view.getContext(), MyPreferenceActivity.class);
 		startActivity(intent);
     }
     
@@ -53,7 +53,7 @@ public class WiMote_Activity extends Activity {
     	switch (item.getItemId()) {
     		case R.id.menu_settings:
     			// Open preferences
-    			Intent intent = new Intent(getBaseContext(), Preference_Activity.class);
+    			Intent intent = new Intent(getBaseContext(), MyPreferenceActivity.class);
     			startActivity(intent);
     			return true;
     		default:
