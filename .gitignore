@@ -6,4 +6,6 @@
 */assets
 project.properties
 
-*.psd
+android/*.psd
+server/*.psd
+
