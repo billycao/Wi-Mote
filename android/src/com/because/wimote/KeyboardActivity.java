@@ -92,9 +92,9 @@ public class KeyboardActivity extends Activity {
 	}
 
 	@Override
-	protected void onStop(){
+	protected void onPause(){
 		mSensorManager.unregisterListener(mySensorListener);
-		super.onStop();
+		super.onPause();
 	}
 
 	private void processKeys(String szKeyAction, int keyCode, int character) {

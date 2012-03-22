@@ -205,13 +205,13 @@ public class AccelActivity extends Activity  implements OnClickListener  {
     }
     
     @Override
-    protected void onStop(){
+    protected void onPause(){
         mSensorManager.unregisterListener(mySensorListener);
       //  pref_editor.putString("aSensitivity", Float.toString(Accel_Sensitivity_Max));
         pref_editor.putInt("aMouseSensitivity", MouseSensitivityPercent);
 		pref_editor.putString("aThreshold", Float.toString(DetectionThreshold));
 		pref_editor.commit();
-        super.onStop();
+        super.onPause();
     }
     
     //========For graphics on screen============

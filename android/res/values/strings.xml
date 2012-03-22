@@ -18,6 +18,7 @@
     <string name="keyboard_menu_accel">Toggle Accelerometer Mouse</string><string name="keyboard_menu_soft">Toggle Android Soft Keyboard</string><string name="keyboard_menu_gaming">Toggle Gaming Mode</string><string name="keyboard_name">Keyboard</string>
     
     <string name="accel_name">Accelerometer</string>
+    <string name="trackpad_name">Trackpad</string>
     <string name="because">&#8230; because!</string>
     
     <string name="prefs_accel_threshold">Mouse Detection Threshold</string>
