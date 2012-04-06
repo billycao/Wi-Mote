@@ -135,16 +135,16 @@ public class AccelActivity extends Activity  implements OnClickListener  {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.Accel_sens_button_up:
-			MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent + 1), 0);
+			MouseSensitivityPercent = util.ChangeSensitivity(2);
 			break;
 		case R.id.Accel_sens_button_down:
-			MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent -1), 0);
+			MouseSensitivityPercent = util.ChangeSensitivity(-2);
 			break;
 		case R.id.Accel_thres_button_up:
-			DetectionThreshold = (float) Math.max((DetectionThreshold +.2), 0);
+			DetectionThreshold = util.ChangeThreshold(.2f);
 			break;
 		case R.id.Accel_thres_button_down:
-			DetectionThreshold = (float) Math.max((DetectionThreshold -.2), 0);
+			DetectionThreshold = util.ChangeThreshold(-.2f);
 			break;
 		}
 		//Accel_Sensitivity_Max = (float) Math.rint(10*Accel_Sensitivity_Max)/10;
@@ -157,9 +157,6 @@ public class AccelActivity extends Activity  implements OnClickListener  {
     	delta = util.processAccel(x, y, z);
 
     	//---------------Pass Accelerometer data to Network Function------------------ 	
-    	//int RoundX =  -Math.round(PercentX);
-    	//int RoundY =  Math.round(PercentY);
- 
     //	szAccelPercent = Integer.toString(RoundX, 10) + " " + Integer.toString(RoundY, 10);
     	szAccelPercent = Float.toString(delta[0]) + " " + Float.toString(delta[1]);
     	

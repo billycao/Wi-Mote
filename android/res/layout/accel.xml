@@ -30,7 +30,7 @@
 	         
 	            <Button
 			        android:id="@+id/Accel_sens_button_up"
-			        android:layout_width="65dp"
+			        android:layout_width="75dp"
 			        android:layout_height="40dp"
 			        android:text="Up" />
 
@@ -43,7 +43,7 @@
 			
 			    <Button
 			        android:id="@+id/Accel_sens_button_down"
-			        android:layout_width="65dp"
+			        android:layout_width="75dp"
 			        android:layout_height="40dp"
 			        android:text="Down" />
 
@@ -67,7 +67,7 @@
  		    
 		     	 <Button
 			        android:id="@+id/Accel_thres_button_up"
-			        android:layout_width="65dp"
+			        android:layout_width="75dp"
 			        android:layout_height="40dp"
 			        android:layout_marginLeft="30dp"
 			        android:text="Up" />
@@ -81,7 +81,7 @@
 
 			    <Button
 			        android:id="@+id/Accel_thres_button_down"
-			        android:layout_width="65dp"
+			        android:layout_width="75dp"
 			        android:layout_height="40dp"
 			        android:layout_marginLeft="30dp"
 			        android:text="Down" />

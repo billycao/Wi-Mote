@@ -269,4 +269,13 @@ public class WiMoteUtil {
 
 		return (new float[] {-PercentX, PercentY});
 	}
+
+	public int ChangeSensitivity(float delta) {
+		return MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent + delta), 0);
+	}
+	
+	public float ChangeThreshold(float delta) {
+		return DetectionThreshold = (float) Math.max((DetectionThreshold +delta), 0);
+	}
+	
 }
