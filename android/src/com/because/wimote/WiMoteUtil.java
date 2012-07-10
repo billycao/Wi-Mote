@@ -103,9 +103,9 @@ public class WiMoteUtil {
 	public Rect getViewRect(View view) {
 		Rect rectParent = new Rect();
 		if (bGaming)
-			((KeyboardGaming_LinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
+			((KeyboardGamingLinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
 		else
-			((Keyboard_LinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
+			((KeyboardLinearLayout)activity.findViewById(R.id.Parent)).getGlobalVisibleRect(rectParent);
 
 		Rect rect = new Rect();
 		view.getGlobalVisibleRect(rect);
@@ -274,4 +274,13 @@ public class WiMoteUtil {
 
 		return (new float[] {-PercentX, PercentY});
 	}
+
+	public int ChangeSensitivity(float delta) {
+		return MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent + delta), 0);
+	}
+	
+	public float ChangeThreshold(float delta) {
+		return DetectionThreshold = (float) Math.max((DetectionThreshold +delta), 0);
+	}
+	
 }

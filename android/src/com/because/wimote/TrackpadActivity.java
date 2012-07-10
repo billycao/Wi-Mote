@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+//import android.widget.TextView;
 
-public class Trackpad_Activity extends Activity implements OnTouchListener{
+public class TrackpadActivity extends Activity implements OnTouchListener{
     /** Called when the activity is first created. */
 	// variables for mouse I/O
 	private float currX, currY, MAX, track_Sensitivity, trackSensitivityMax;
@@ -29,7 +29,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 	String mouseData = new String();
 	
 	// variables for testing
-	private TextView xview, yview, statusText;
+	// private TextView xview, yview, statusText;
 	
 	private OnTouchListener buttonListener = new OnTouchListener() {
 
@@ -38,25 +38,25 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				if (button.getId() == R.id.trackpad_left && rightClick == false){
-					statusText.setText("Left Click Detected");
+					//statusText.setText("Left Click Detected");
 					util.sendString("MOUSE_LEFT_DOWN");
 					ret = leftClick = true;
 				}
 				else if (button.getId() == R.id.trackpad_right && leftClick == false){
-					statusText.setText("Right Click Detected");
+					//statusText.setText("Right Click Detected");
 					util.sendString("MOUSE_RIGHT_DOWN");
 					ret = rightClick = true;
 				}
 				break;
 			case MotionEvent.ACTION_UP:
 				if (button.getId() == R.id.trackpad_left && leftClick == true){
-					statusText.setText("Left Release Detected");
+					//statusText.setText("Left Release Detected");
 					util.sendString("MOUSE_LEFT_UP");
 					leftClick = false;
 					ret = true;
 				}
 				else if (button.getId() == R.id.trackpad_right && rightClick == true){
-					statusText.setText("Right Release Detected");
+					//statusText.setText("Right Release Detected");
 					util.sendString("MOUSE_RIGHT_UP");
 					rightClick = false;
 					ret = true;
@@ -74,7 +74,7 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		@Override
 		public boolean onDoubleTap(MotionEvent e)
 		{
-			statusText.setText("Left Click Detected");
+			//statusText.setText("Left Click Detected");
 			doubleTap = true;
 			util.sendString("MOUSE_LEFT_DOWN");
 			return leftClick;
@@ -124,13 +124,15 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		MouseSensitivityPercent = settings.getInt("tMouseSensitivity", 50);
 		track_Sensitivity = trackSensitivityMax * ((float)MouseSensitivityPercent/100);
 		
-		// set text
+		// set debug text
+		/*
 		xview = (TextView)findViewById(R.id.trackpad_textview1);
 		yview = (TextView)findViewById(R.id.trackpad_textview2);
 		statusText = (TextView)findViewById(R.id.trackpad_textview3);
 		xview.setText(Integer.toString((int) currX));
     	yview.setText(Integer.toString((int) currY));
     	statusText.setText("Successful initialization");
+    	*/
     }
 	
 	private boolean ProcessData(float x, float y)
@@ -142,44 +144,42 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
     	currY = y;
     	if(deltax == 0 && deltay == 0)    	    	
     		return false;
-    	float perx = deltax; ///screenWidth * 100;
-    	float pery = deltay; ///screenHeight * 100;
 
-    	perx = (float) (Math.min(perx, MAX)*track_Sensitivity);
-    	pery = (float) (Math.min(pery, MAX)*track_Sensitivity);
+    	deltax = (float) Math.min(deltax, MAX);
+    	deltay = (float) Math.min(deltay, MAX);
     	
-    	perx = (float) (Math.max(perx, -MAX)*track_Sensitivity);
-    	pery = (float) (Math.max(pery, -MAX)*track_Sensitivity);
+    	deltax = (float) Math.max(deltax, -MAX);
+    	deltay = (float) Math.max(deltay, -MAX);
 
     	//orientation fix? confirmed, -1 fixed direction Stays fixed even if screen rotates..
-    	perx = perx*-1; 
-    	pery = pery*-1;
+    	deltax *= -1*track_Sensitivity; 
+    	deltay *= -1*track_Sensitivity;
     	
     	
     	// for now simply update the values in display boxes
-    	xview.setText("deltaX: " + Integer.toString((int)perx));
-    	yview.setText("deltaY: " + Integer.toString((int)pery));
+    	// xview.setText("deltaX: " + Integer.toString((int)deltax));
+    	// yview.setText("deltaY: " + Integer.toString((int)deltay));
         
     	// beginning of gestures
     	if(multiTouch == true)
     	{
-    		statusText.setText("Scrolling swag");
+    		// statusText.setText("Scrolling swag");
     		
-    		if(Math.abs(perx) > Math.abs(pery))
+    		if(Math.abs(deltax) > Math.abs(deltay))
     		{
-    			mouseData = Float.toString(perx/20);
+    			mouseData = Float.toString(deltax/20);
     	    	util.sendString("MOUSE_HSCROLL " + mouseData);
     		}
     		else
     		{
-    			mouseData = Float.toString(-pery/20);
+    			mouseData = Float.toString(-deltay/20);
     	    	util.sendString("MOUSE_SCROLL " + mouseData);
     		}
     	}
     	// single finger motion
         else
         {
-	        mouseData = Float.toString(perx) + " " + Float.toString(pery);
+	        mouseData = Float.toString(deltax) + " " + Float.toString(deltay);
 	    	util.sendString("MOUSE_DELTA " + mouseData);
         }
     	return true;
@@ -200,19 +200,19 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 		float perx = arg1.getX()*arg1.getXPrecision();
 		float pery = arg1.getY()*arg1.getYPrecision();
 			
-		xview.setText(Integer.toString((int) perx));
-    	yview.setText(Integer.toString((int) pery));
+		// xview.setText(Integer.toString((int) perx));
+    	// yview.setText(Integer.toString((int) pery));
 		switch(arg1.getAction())
 		{
 		case MotionEvent.ACTION_UP:
-			statusText.setText("Release");
+			// statusText.setText("Release");
 			multiTouch = false;
 			if(doubleTap)
 				util.sendString("MOUSE_LEFT_UP");
 			success = true;
 			break;
 		case MotionEvent.ACTION_DOWN:
-			statusText.setText("Single touch");
+			// statusText.setText("Single touch");
 			currX = perx;
 			currY = pery;
 			success = true;
@@ -221,14 +221,14 @@ public class Trackpad_Activity extends Activity implements OnTouchListener{
 			multiTouch = true;
 			break;
 		case MotionEvent.ACTION_POINTER_UP:
-			statusText.setText("AP Up");
+			// statusText.setText("AP Up");
 			multiTouch = false;
 			break;
 		case MotionEvent.ACTION_MOVE:
 			success = ProcessData(perx, pery);
 			break;
 		default:
-			statusText.setText("Other touch type detected!");
+			// statusText.setText("Other touch type detected!");
 			Log.d("double tap", Integer.toString(arg1.getAction()));
 			multiTouch = true;
 			success = true;

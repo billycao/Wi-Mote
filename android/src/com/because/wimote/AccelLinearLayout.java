@@ -12,20 +12,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 //import android.widget.ToggleButton;
 
-public class Accel_LinearLayout extends LinearLayout {
+public class AccelLinearLayout extends LinearLayout {
 
 	private Activity activity;
 	private WiMoteUtil util;
 
 	private HashMap<Integer, Point> pointers = new HashMap<Integer, Point>();
 
-	public Accel_LinearLayout(Context context) {
+	public AccelLinearLayout(Context context) {
 		super(context);
 		activity = (Activity)context;
 		util = new WiMoteUtil(activity);
 	}
 
-	public Accel_LinearLayout(Context context, AttributeSet attrs) {
+	public AccelLinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		activity = (Activity)context;
 		util = new WiMoteUtil(activity);

@@ -6,16 +6,16 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
-public class Keyboard_LinearLayout extends LinearLayout {
+public class KeyboardLinearLayout extends LinearLayout {
 
 	private WiMoteUtil util;
 
-	public Keyboard_LinearLayout(Context context) {
+	public KeyboardLinearLayout(Context context) {
 		super(context);
 		util = new WiMoteUtil((Activity)context);
 	}
 
-	public Keyboard_LinearLayout(Context context, AttributeSet attrs) {
+	public KeyboardLinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		util = new WiMoteUtil((Activity)context);
 	}
