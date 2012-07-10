@@ -15,6 +15,10 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class SeekBarPreference extends Preference implements OnSeekBarChangeListener{
  
  public static int maximum    = 100;

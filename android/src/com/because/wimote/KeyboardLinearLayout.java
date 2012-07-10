@@ -6,6 +6,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class KeyboardLinearLayout extends LinearLayout {
 
 	private WiMoteUtil util;

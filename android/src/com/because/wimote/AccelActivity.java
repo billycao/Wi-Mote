@@ -3,29 +3,26 @@ package com.because.wimote;
  *Saqib's Accelerometer test
  */
 
-import android.view.View;
-import android.view.View.OnClickListener;
-//import android.view.View.OnTouchListener;
-
-import android.content.SharedPreferences;  
-
 import java.util.List;
 
 import android.app.Activity;
-//import android.content.Context; // test TODO: remove test
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-
 import android.preference.PreferenceManager;
-
-import android.widget.TextView;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
-
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class AccelActivity extends Activity  implements OnClickListener  {
 	private WiMoteUtil util;
 	
@@ -34,8 +31,6 @@ public class AccelActivity extends Activity  implements OnClickListener  {
 	private Sensor mAccelerometer;
 	SharedPreferences.Editor pref_editor; 
 	
-    private float PercentX, PercentY, PercentZ = 0f;
-    
   //  private TextView mTextView1, mTextView2; // TODO remove test output
     private TextView mSensitivity, mThreshold;
     ToggleButton toggleRun;
@@ -49,39 +44,6 @@ public class AccelActivity extends Activity  implements OnClickListener  {
     //for server________________________________________
     String szAccelPercent = new String();
 
-<<<<<<< HEAD
-	
-=======
-//	private static final String hostname = "192.168.0.6";
-	//private static final int port = 27015;
-	/*
->>>>>>> aa1895e13bbfa4b92ed2d82aa17da200e8b5c588
-	private OnTouchListener buttonListener = new OnTouchListener() {
-
-		public boolean onTouch(View button, MotionEvent event) {
-			
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				if (button.getId() == R.id.LeftClick)
-					util.sendString("MOUSE_LEFT_DOWN");
-				else if (button.getId() == R.id.RightClick)
-					util.sendString("MOUSE_RIGHT_DOWN");
-				break;
-			case MotionEvent.ACTION_UP:
-				if (button.getId() == R.id.LeftClick)
-					util.sendString("MOUSE_LEFT_UP");
-				else if (button.getId() == R.id.RightClick)
-					util.sendString("MOUSE_RIGHT_UP");
-				break;
-			default:
-				break;
-			}
-			
-			return false;
-		}
-	};
-	*/
-	
     /** Called when the activity is first created. */
     
     @Override
@@ -135,38 +97,41 @@ public class AccelActivity extends Activity  implements OnClickListener  {
     }
     // SERVER  ------------------------------------------------------------
     //-------------------------------------------------------------------  
-    //+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.Accel_sens_button_up:
-			MouseSensitivityPercent = util.ChangeSensitivity(2);
-			break;
-		case R.id.Accel_sens_button_down:
-			MouseSensitivityPercent = util.ChangeSensitivity(-2);
-			break;
-		case R.id.Accel_thres_button_up:
-			DetectionThreshold = util.ChangeThreshold(.2f);
-			break;
-		case R.id.Accel_thres_button_down:
-			DetectionThreshold = util.ChangeThreshold(-.2f);
-			break;
-		}
-		//Accel_Sensitivity_Max = (float) Math.rint(10*Accel_Sensitivity_Max)/10;
-		DetectionThreshold = (float) Math.rint(10*DetectionThreshold)/10;
-	}
-	//+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
+  //+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
+  	public void onClick(View v) {
+  		switch (v.getId()) {
+  		case R.id.Accel_sens_button_up:
+  			MouseSensitivityPercent = util.ChangeSensitivity(2);
+  			break;
+  		case R.id.Accel_sens_button_down:
+  			MouseSensitivityPercent = util.ChangeSensitivity(-2);
+  			break;
+  		case R.id.Accel_thres_button_up:
+  			DetectionThreshold = util.ChangeThreshold(.2f);
+  			break;
+  		case R.id.Accel_thres_button_down:
+  			DetectionThreshold = util.ChangeThreshold(-.2f);
+  			break;
+  		}
+  		//Accel_Sensitivity_Max = (float) Math.rint(10*Accel_Sensitivity_Max)/10;
+  		DetectionThreshold = (float) Math.rint(10*DetectionThreshold)/10;
+  	}
+  	//+++++++++++++++++++BUTTON+++++++++++++++++++++++++++++++++++++++++++++++++
 	
     private void ProcessData(float x, float y, float z) {
     	float[] delta = new float[2];
     	delta = util.processAccel(x, y, z);
 
     	//---------------Pass Accelerometer data to Network Function------------------ 	
+    	//int RoundX =  -Math.round(PercentX);
+    	//int RoundY =  Math.round(PercentY);
+ 
     //	szAccelPercent = Integer.toString(RoundX, 10) + " " + Integer.toString(RoundY, 10);
     	szAccelPercent = Float.toString(delta[0]) + " " + Float.toString(delta[1]);
     	
     //	mTextView2.setText("ACCEL " + szAccelPercent);  // test output
     	if(toggleRun.isChecked())
-    		util.sendString("MOUSE_DELTA " + szAccelPercent);
+    		util.new UDPHelper().execute("MOUSE_DELTA " + szAccelPercent);
 
     	//-------------Server Passing complete---------------------------------------------
     	

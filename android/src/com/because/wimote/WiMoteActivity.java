@@ -9,6 +9,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class WiMoteActivity extends Activity {
 	public static final String PREFS_NAME = "WiMotePrefsFile";
 	

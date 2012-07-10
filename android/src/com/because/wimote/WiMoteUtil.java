@@ -1,23 +1,32 @@
 package com.because.wimote;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.because.wimote.R;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ToggleButton;
 
+import com.because.wimote.R;
+
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class WiMoteUtil {
 	private boolean bGaming = false;
 	private String hostname;
@@ -151,16 +160,14 @@ public class WiMoteUtil {
 			}
 		}
 	}
-
+	
+	// deprecated??
+	// TODO decide if we want to use this for older versions of Android
 	public void sendString(String s) {
 		try {
-<<<<<<< HEAD
-=======
 			String string = Integer.toString(pin) + " " + s;
 			DatagramSocket socket = new DatagramSocket();
->>>>>>> aa1895e13bbfa4b92ed2d82aa17da200e8b5c588
 			byte[] data = string.getBytes();
-			DatagramSocket socket = new DatagramSocket();
 			socket.connect(InetAddress.getByName(hostname), port);
 			DatagramPacket packet = new DatagramPacket(data, data.length);
 			socket.send(packet);
@@ -221,7 +228,7 @@ public class WiMoteUtil {
 			// We are asked to depress specific key(s) that is/are NOT
 			// currently depressed.
 			if (!depressedKeyStreams.contains(szKeyStream)) {
-				sendString(KEY_DOWN + " " + szKeyStream);
+				new UDPHelper().execute(KEY_DOWN + " " + szKeyStream);
 				depressedKeyStreams.add(szKeyStream);
 			}
 		}
@@ -229,7 +236,7 @@ public class WiMoteUtil {
 			// We are asked to release specific key(s) that is/are currently
 			// depressed.
 			if (depressedKeyStreams.contains(szKeyStream)) {
-				sendString(KEY_UP + " " + szKeyStream);
+				new UDPHelper().execute(KEY_UP + " " + szKeyStream);
 				depressedKeyStreams.remove(szKeyStream);
 			}
 		}
@@ -274,7 +281,7 @@ public class WiMoteUtil {
 
 		return (new float[] {-PercentX, PercentY});
 	}
-
+	
 	public int ChangeSensitivity(float delta) {
 		return MouseSensitivityPercent =  (int) Math.max((MouseSensitivityPercent + delta), 0);
 	}
@@ -282,5 +289,51 @@ public class WiMoteUtil {
 	public float ChangeThreshold(float delta) {
 		return DetectionThreshold = (float) Math.max((DetectionThreshold +delta), 0);
 	}
-	
+
+	/**
+	 * @author Sayan Samanta
+	 * 
+	 * This class fixes the issue we were having with ICS by making a call 
+	 * network comm no longer occurs on the main thread (stand alone sendstring)
+	 * 
+	 * example call: 
+	 * util.new UDPHelper().execute(string name, null, null)
+	 * 
+	 * TODO is there a better way to do this??
+	 * (e.g. have a single background thread that is fed server strings via a pipe?)
+	 */
+	public class UDPHelper extends AsyncTask<String, Void, Void> 
+	{
+		@Override
+		protected Void doInBackground(String... params) {
+
+			DatagramSocket UDPSocket = null;
+	        try 
+	        {
+		        	String string = Integer.toString(pin) + " " + params[0].toString();
+		        	Log.d("TO SERVER", string);
+					byte[] data = string.getBytes();
+	                InetAddress addr = InetAddress.getByName(hostname);
+	                UDPSocket = new DatagramSocket();
+	                DatagramPacket packet = new DatagramPacket(data, data.length, addr, port);
+	                packet.setLength(data.length);
+	                UDPSocket.send(packet);
+	                UDPSocket.close();
+	        }
+	        catch (SocketException e) 
+	                {
+	                        e.printStackTrace();
+	                } 
+	        catch (UnknownHostException e) 
+	                {
+	                        e.printStackTrace();
+	                } 
+	        catch (IOException e) 
+	                {
+	                        e.printStackTrace();
+	                }
+			return null;
+		}
+	}
+
 }

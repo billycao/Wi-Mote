@@ -3,6 +3,10 @@ package com.because.wimote;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class MyPreferenceActivity extends PreferenceActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

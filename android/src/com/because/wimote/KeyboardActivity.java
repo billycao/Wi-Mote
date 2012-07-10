@@ -15,6 +15,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class KeyboardActivity extends Activity {
 	private final int KEYCODE_CAPS_LOCK = 115;
 	private final int KEYCODE_ESCAPE = 111;
@@ -30,7 +34,7 @@ public class KeyboardActivity extends Activity {
 			if (bAccel) {
 				float[] delta = new float[2];
 				delta = util.processAccel(-event.values[1], event.values[0], event.values[2]);
-				util.sendString("MOUSE_DELTA " + Float.toString(delta[0]) + " " + Float.toString(delta[1]));
+				util.new UDPHelper().execute("MOUSE_DELTA " + Float.toString(delta[0]) + " " + Float.toString(delta[1]));
 				try {
 					Thread.sleep(0, 10000);
 				} catch (InterruptedException e) {

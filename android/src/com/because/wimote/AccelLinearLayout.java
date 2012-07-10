@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 //import android.widget.ToggleButton;
 
+/**
+ * TODO jdoc it? 
+ *
+ */
 public class AccelLinearLayout extends LinearLayout {
 
 	private Activity activity;
